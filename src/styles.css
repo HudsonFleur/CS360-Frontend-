@@ -1,0 +1,52 @@
+.headerContainer{
+    display: flex;
+    padding: 30px;
+    justify-content: space-between;
+
+}
+.headerBox{
+    text-align: right;
+    float: right;
+}
+.headerElements{
+    margin: 20px;
+    font-family: monospace;
+    font-size: 30px;
+    color: inherit;
+    text-decoration: inherit;
+}
+.headerLogo{
+    text-align: left;
+    width: 90px;
+    height: 90px;
+}
+.homeContainer{
+    display: flex;
+    justify-content: space-between;
+}
+.homeBox{
+    margin-left: 20px;
+    text-align: left;
+}
+.homeImage{
+    text-align: right;
+    align-items: center;
+}
+.registerContainer{
+    display: flex;
+    padding: 30px;
+    border-style: solid;
+    border-color: green;
+    justify-content: space-between;
+}
+.text{
+    font-family: monospace;
+    font-size: 20px;
+    width: 250px;
+}
+.button{
+    font-family: monospace;
+    font-size: 20px;
+    align-self: center;
+}
+
