@@ -17,55 +17,50 @@ Last Worked on: November 15th   Hudson Fleurimond
 */
 import React from 'react'
 import Axios from 'axios'
-import {withRouter} from "react-router-dom";
+import { useHistory, withRouter } from "react-router-dom";
+import Login from '../pages/Login';
 
 // LoginForm class
-class RegisterForm extends React.Component {
-    // Constructor for Login Class
+class LoginForm extends React.Component
+{   // Constructor for Login Class
     /*
         State Declarations
-            name:       State object for holding the name of the User, set to empty initially
             email:      State object for holding the email of the User, set to empty initially
             password:   State object for holding the password of the User, set to empty initially
     */
-    constructor(props) {
+    constructor(props) 
+    {
         super(props);
         this.state = {
-            name: "",
             email: "",
             password: "",
         }
-        this.setName = this.setName.bind(this);
-        this.setEmail = this.setEmail.bind(this);
-        this.setPassword = this.setPassword.bind(this);
+        this.getEmail = this.getEmail.bind(this);
+        this.getPassword = this.getPassword.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-    // Function to set the User Name
-    setName(event) {
-        this.setState({ name: event.target.value });
-    }
-    // Function to set the User Email
-    setEmail(event) {
+    // Function to get the User Email
+    getEmail(event) {
         this.setState({ email: event.target.value });
     }
-    // Function to set the User Password
-    setPassword(event) {
+    // Function to get the User Password
+    getPassword(event) {
         this.setState({ password: event.target.value });
     }
     /* Function to send a POST request to the database (server), create a person object
-        which contains the User's Name, User's Email and User's Password and POST to the route for
-        handling user registration. Upon successful Registration, redirect to the Task's Page
+        which contains the User's Email and User's Password and POST to the route for
+        handling user logins. Upon successful Login, redirect to the Task's Page
         and send along the response.
     */
-    handleSubmit(event) {
+    handleSubmit(event) 
+    {
         event.preventDefault()
         const person = {
-            name: this.state.name,
             email: this.state.email,
             password: this.state.password
         };
         const { history } = this.props;
-        Axios.post('http://localhost:5000/users', person)
+        Axios.post('http://localhost:5000/users/login', person)
             .then(function(response) {
                 history.push({
                     pathname:'/tasks',
@@ -76,29 +71,20 @@ class RegisterForm extends React.Component {
                 console.log(error);
             });
 
-        this.setState({ name: "", email: "", password: "" })
+        this.setState({ email: "", password: "" })
     }
-
-    render() {
-        return ( 
-        <div >
+    render()
+    {
+        return (
+            <div >
             <form onSubmit = { this.handleSubmit} >
-                <label > 
-                    Name: <input type = "text" value = { this.state.name } onChange = { this.setName }/> 
-                </label > 
-                
                 <label >
-                    Email: <input type = "text" value = { this.state.email } onChange = { this.setEmail }/> 
+                    Email: <input type = "text" value = { this.state.email } onChange = { this.getEmail }/> 
                 </label> 
                 
                 <label >
-                    Password: <input type = "password" value = { this.state.password } onChange = { this.setPassword }/> 
-                </label>
-                
-                <label >
-                    Confirm Password: <input type = "password" />
-                </label> 
-                
+                    Password: <input type = "password" value = { this.state.password } onChange = { this.getPassword }/> 
+                </label>    
                 <input type = "submit" value = "Submit" />
             </form> 
         </div >
@@ -106,4 +92,4 @@ class RegisterForm extends React.Component {
     }
 }
 
-export default withRouter(RegisterForm)
+export default withRouter(LoginForm)

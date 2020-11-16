@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
-import {Route,Switch} from 'react-router-dom'
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
+import './styles.css'
+
 import Home from './pages/Home'
 import AboutUs from './pages/AboutUs'
 import Register from './pages/Register'
-import './styles.css'
+import Login from './pages/Login'
+import Tasks from './pages/Tasks'
+import User from './pages/User'
 
 
 class App extends Component
@@ -11,23 +15,22 @@ class App extends Component
     render() 
     {
         const App = () => (
-            
-            <div>
+            <Router>
                 <Switch>
-                    <Route exact path='/' component={Home}/>
-                    <Route exact path='/about-us' component={AboutUs}/>
-                    <Route exact path='/register' component={Register}/>
+                    <Route exact path='/' component={Home} />
+                    <Route path='/tasks'    component={Tasks} />
+                    <Route path='/about-us' component={AboutUs} />
+                    <Route path='/register' component={Register} />
+                    <Route path='/login' component={Login} />
+                    <Route path='/user' component={User} />
                 </Switch>
-            </div>
+            </Router>             
         )
 
         return(
-            <Switch>
-                <App />
-            </Switch>
+            <App />
         )
     }
-    
 }
 
 export default App

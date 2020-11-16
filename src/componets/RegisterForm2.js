@@ -1,74 +1,59 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Axios from 'axios'
+import { useHistory } from 'react-router-dom';
 
-class RegisterForm extends React.Component
+function RegisterForm()
 {
-    constructor(person)
-    {
-        super(person);
-        this.state = {
-            name:"",
-            email: "",
-            password:"",
-         };
-         this.state = {
-             users: []
-         };
+    const history = useHistory();
 
-         this.setName = this.setName.bind(this);
-         this.setEmail = this.setEmail.bind(this);
-         this.setPassword = this.setPassword.bind(this);
-         this.handleSubmit = this.handleSubmit.bind(this);
-    }
+    const [person, setPerson] = useState({
+      name: "",
+      email: "",
+      password: "",
+    })
 
-    setName(event) {
-        this.setState({name: event.target.value});
+    const setName = (name) => {
+        setPerson( {...person, name: name });
     }
-    setEmail(event) {
-        this.setState({email: event.target.value});
+    const setEmail = (email) => {
+      setPerson( {...person, email: email });
     }
-    setPassword(event) {
-        this.setState({password: event.target.value});
-    }
-    handleSubmit(event){
-        console.log(this.state);
-
-        const person = {
-            name: this.state.name,
-            email: this.state.email,
-            password: this.state.password
-        };
-        Axios.post('/http://localhost:3000/contact', person)
-          .then(function (response) {
+    const setPassword = (password) => {
+      setPerson( {...person, password: password });
+    } 
+    const handleSubmit = () => {
+      history.push({
+        pathname:'/about-us',
+        data: {
+          name: "Test 1 2 3"
+        }
+      } );
+        Axios({
+          method: 'POST',
+          url:'http://192.168.50.103:5000/users', 
+          data: person
+        }).then(function (response) {
+          if(response.status === 200)
+          {
             console.log(response);
+          }
           })
           .catch(function (error) {
             console.log(error);
           });
 
     }
-
-      componentDidMount() {
-        Axios.get("users.json").then((response) => {
-          this.setState({ users: response.data });
-        });
-      }
-   
-
-    render()
-    {
-        const {users} = this.state;
         return(
             <div>
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <label> Name: 
-                        <input type="text" value={this.state.name} onChange={this.setName} />
+                        <input type="text" onChange={setName} />
                     </label>
                     <label> Email: 
-                        <input type="text" value={this.state.email} onChange={this.setEmail} />
+                        <input type="text" onChange={setEmail} />
                     </label>
                     <label> Password: 
-                        <input type="password" value={this.state.password} onChange={this.setPassword} />
+                        <input type="password" onChange={setPassword} />
                     </label>
                     <label> Confirm Password: 
                         <input type="password"/>
@@ -76,25 +61,9 @@ class RegisterForm extends React.Component
                     <input type="submit" value="Submit" />
                 </form>
                 <div>
-        <ul>
-          {users.map((user) => (
-            <li>
-              <p>
-                <strong>Name:</strong> {user.name}
-              </p>
-              <p>
-                <strong>Email:</strong> {user.email}
-              </p>
-              <p>
-                <strong>City:</strong> {user.address.city}
-              </p>
-            </li>
-          ))}
-        </ul>
       </div>
             </div>
         )
-    }
-}
+        }
 
 export default RegisterForm

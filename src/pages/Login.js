@@ -1,19 +1,19 @@
 import React from 'react'
 import Header from '../componets/Header'
-import RegisterForm from './../componets/RegisterForm'
 import  './../styles.css'
+import LoginForm from './../componets/LoginForm'
 
-class Register extends React.Component
+class Login extends React.Component
 {
     render()
     {
         return(
             <div>
                 <Header />
-                <RegisterForm />
+                <LoginForm />
             </div>
         )
     }
 }
 
-export default Register
+export default Login

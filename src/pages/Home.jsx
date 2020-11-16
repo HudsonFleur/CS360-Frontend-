@@ -1,11 +1,8 @@
-import React, {State} from 'react'
+import React from 'react'
 import {Link} from 'react-router-dom'
-import Axios from 'axios'
 
-class Home extends React.Component
+function Home()
 {
-    render()
-    {
         return(
 <div id="wrapper">
         <div id="container">
@@ -17,12 +14,30 @@ class Home extends React.Component
             </div>
         </div>
         <div id="signup-container">
-            This is where the sign up and about buttons would go
+            <div>
+                <button className="button" type="button"> 
+                    <Link 
+                        style={{color:'inherit', textDecoration: 'inherit'}}
+                        className="text" to="/register">
+                        Register Now !
+                    </Link>
+                </button>
+            </div>
+
+            <div> 
+                Already Have an Account?
+                <button className="button" type="button"> 
+                    <Link 
+                        style={{color:'inherit', textDecoration: 'inherit'}}
+                        className="text" to="/login">
+                        Login
+                    </Link>
+                </button> 
+            </div>
+               
         </div>
 </div>
-
-        )
-    }
+    )
 }
 
 export default Home

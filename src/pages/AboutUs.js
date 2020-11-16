@@ -1,14 +1,16 @@
 import React from 'react'
 import Header from '../componets/Header'
 
-class Contact extends React.Component
+class AboutUs extends React.Component
 {
     render()
     {
         return(
-            <Header />
+            <div>
+                <Header />
+            </div>
         )
     }
 }
 
-export default Contact
+export default AboutUs

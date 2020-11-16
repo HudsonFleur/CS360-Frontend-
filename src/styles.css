@@ -118,3 +118,40 @@ button:hover.home {
     color: #000000;
     background-color: #ffffff;
 }
+
+
+
+.text{
+    font-family: monospace;
+    font-size: 20px;
+    width: 250px;
+    color: #fff;
+}
+.headerContainer{
+    display: flex;
+    padding: 30px;
+    justify-content: space-between;
+
+}
+.headerBox{
+    text-align: right;
+    float: right;
+}
+.headerElements{
+    margin: 20px;
+    font-family: monospace;
+    font-size: 30px;
+    color: #fff;
+    text-decoration: inherit;
+}
+.modal {
+    background: rgba(0, 0, 0, 0.6);
+  }
+  .modal-container {
+    position: absolute;
+    width: 60%;
+    background: #ffffff;
+    left: 25%;
+    top: 30%;
+    padding: 20px;
+  }
