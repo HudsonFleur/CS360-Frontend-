@@ -89,10 +89,7 @@ class Tasks extends React.Component {
     */
     componentDidUpdate()
     {
-        if(1 > 2)
-        {
         this.getTasks();
-        }
     }
     /*
         This function is responsible for setting up the necessary information needed to make calls to the DB and navigating, through the
