@@ -89,7 +89,10 @@ class Tasks extends React.Component {
     */
     componentDidUpdate()
     {
+        if(1 > 2)
+        {
         this.getTasks();
+        }
     }
     /*
         This function is responsible for setting up the necessary information needed to make calls to the DB and navigating, through the
@@ -112,6 +115,11 @@ class Tasks extends React.Component {
                     id: location.response.data.user._id,
                     token: location.response.data.token
             }})
+            this.setState({
+                task:{
+                    ...this.state.task,
+                    owner: location.response.data.user._id,
+            }})
             console.log("From Response", location.response.data.token)
         }
         else
@@ -121,6 +129,11 @@ class Tasks extends React.Component {
                     ...this.state.user,
                     id: location.user.id,
                     token: location.user.token
+            }})
+            this.setState({
+                task:{
+                    ...this.state.task,
+                    owner: location.user.id,
             }})
             console.log("From User", location.user.token)
         }
@@ -179,7 +192,7 @@ class Tasks extends React.Component {
             task:{
                 ...this.state.task,
                 description: e.target.value,
-                owner: this.state.user.id
+                //owner: this.state.user.id
         }})
     }
     /*
@@ -248,6 +261,7 @@ class Tasks extends React.Component {
 // --------------------------------------------- Updating Functions ---------------------------------------------------------------------
     editTask = (TaskID) => {
         const { history } = this.props;
+        console.log(this.state.task)
         Axios({
             method: 'PATCH',
             url: 'http://192.168.50.103:5000/tasks/' + TaskID,
@@ -399,7 +413,7 @@ class Tasks extends React.Component {
                                         format={"YYYY-MM-DD"}
                                         type="date"
                                         //value={this.state.task.dueDate}
-                                        onChange={this.setDate}
+                                        //onChange={this.setDate}
                                         InputLabelProps={{
                                         shrink: true,
                                         }}

@@ -2,7 +2,6 @@
 ========================== Log File ========================================
 Last Worked on: November 15th   Hudson Fleurimond
     Known Issues:
-        . Error 400 When trying to save update
         . Add function to cancel button
 
     What Needs Work:
@@ -11,7 +10,7 @@ Last Worked on: November 15th   Hudson Fleurimond
         . Adding Alerts and Error Notifications
 
     Concerns:
-        .
+        . Update Password
 */
 import React from 'react'
 import Axios from 'axios'
@@ -41,8 +40,7 @@ class User extends React.Component
             userInfo: {
                 name: "",
                 email: "",
-                password: ""
-
+                //password: ""
             }
         }
     }
@@ -99,7 +97,7 @@ class User extends React.Component
             method: 'PATCH',
             url: 'http://192.168.50.103:5000/users/me',
             data: this.state.userInfo,
-            headers: {"Authorization" : `Bearer ${location.user.token}`}
+            headers: {"Authorization" : `Bearer ${this.state.user.token}`}
           }).then((response) => {
             history.push({
                 pathname:'/tasks',
