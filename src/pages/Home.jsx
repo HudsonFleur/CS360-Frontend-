@@ -1,5 +1,6 @@
-import React from 'react'
-import {Link} from 'react-router-dom'
+import React from 'react';
+import {Link} from 'react-router-dom';
+import Button from '@material-ui/core/Button';
 
 function Home()
 {
@@ -15,13 +16,14 @@ function Home()
         </div>
         <div id="signup-container">
             <div>
-                <button className="button" type="button"> 
+                <Button variant="contained" color="primary" 
+                    > 
                     <Link 
                         style={{color:'inherit', textDecoration: 'inherit'}}
-                        className="text" to="/register">
+                        to="/register">
                         Register Now !
                     </Link>
-                </button>
+                </Button>
             </div>
 
             <div> 
@@ -34,7 +36,6 @@ function Home()
                     </Link>
                 </button> 
             </div>
-               
         </div>
 </div>
     )

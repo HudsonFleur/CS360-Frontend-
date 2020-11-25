@@ -1,7 +1,7 @@
-import React from 'react'
-import Header from '../componets/Header'
-import RegisterForm from './../componets/RegisterForm'
-import  './../styles.css'
+import React from 'react';
+import Header from '../componets/Header';
+import RegisterForm from './../componets/RegisterForm';
+import  './../styles.css';
 
 class Register extends React.Component
 {

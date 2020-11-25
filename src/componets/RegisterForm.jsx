@@ -1,6 +1,6 @@
 /*
 -------------------- Log File --------------------
-Last Worked on: November 15th   Hudson Fleurimond
+Last Worked on: November 24th   Hudson Fleurimond
     Known Issues:
         . 
 
@@ -9,11 +9,10 @@ Last Worked on: November 15th   Hudson Fleurimond
         . CSS styles get whatever is on the home, We need to give everything a style or CSS components
             so the default isn't the same thing everywhere,
         . Adding Alerts and Error Notifications
-        . Renaming of variables
 
     Concerns:
-        . Add and change state to an User object
         . Change post method form
+        . Redo Entire page with material ui
 */
 import React from 'react'
 import Axios from 'axios'
@@ -72,9 +71,7 @@ class RegisterForm extends React.Component {
                     response
                 });
             })
-            .catch(function(error) {
-                console.log(error);
-            });
+            .catch(function(error) {});
 
         this.setState({ name: "", email: "", password: "" })
     }

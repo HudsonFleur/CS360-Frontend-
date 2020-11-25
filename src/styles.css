@@ -1,6 +1,8 @@
 #wrapper {
     width: 100vh;
     height: 100vh;
+    background-image: url("./img/home_page.png");
+    background-size: cover;
 }
 
 @import url('https://fonts.googleapis.com/css?family=Roboto:700');
@@ -80,14 +82,7 @@ body {
     }
 }
 
-p {
-    position: fixed;
-    width: 100%;
-    bottom: 30px;
-    font-size: 12px;
-    color: #999;
-    margin-top: 200px;
-}
+
 
 #signup-container {
     color: #ffffff;
@@ -119,22 +114,33 @@ button:hover.home {
     background-color: #ffffff;
 }
 
-
-
 .text{
     font-family: monospace;
     font-size: 20px;
     width: 250px;
     color: #fff;
+    overflow:hidden
 }
 .headerContainer{
     display: flex;
     padding: 30px;
     justify-content: space-between;
-
 }
 .headerBox{
     text-align: right;
+    float: right;
+}
+.taskbarContainer{
+    display: flex;
+    padding: 30px;
+    justify-content: space-between;
+}
+.taskbarLeft{
+    align-self: left;
+    float: right;
+}
+.taskbarRight{
+    align-self: right;
     float: right;
 }
 .headerElements{

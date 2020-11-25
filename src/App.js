@@ -7,8 +7,8 @@ import AboutUs from './pages/AboutUs'
 import Register from './pages/Register'
 import Login from './pages/Login'
 import Tasks from './pages/Tasks'
+import Goals from './pages/Goals'
 import User from './pages/User'
-
 
 class App extends Component
 {
@@ -18,11 +18,12 @@ class App extends Component
             <Router>
                 <Switch>
                     <Route exact path='/' component={Home} />
-                    <Route path='/tasks'    component={Tasks} />
-                    <Route path='/about-us' component={AboutUs} />
-                    <Route path='/register' component={Register} />
-                    <Route path='/login' component={Login} />
-                    <Route path='/user' component={User} />
+                    <Route exact path='/register' component={Register} />
+                    <Route exact path='/login' component={Login} />
+                    <Route exact path='/about-us' component={AboutUs} />
+                    <Route exact path='/tasks'    component={Tasks} />
+                    <Route exact path='/user' component={User} />
+                    <Route exact path='/goals' component={Goals} />
                 </Switch>
             </Router>             
         )

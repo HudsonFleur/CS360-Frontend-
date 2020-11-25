@@ -1,6 +1,6 @@
 /*
 -------------------- Log File --------------------
-Last Worked on: November 15th   Hudson Fleurimond
+Last Worked on: November 24th   Hudson Fleurimond
     Known Issues:
         . 
 
@@ -9,16 +9,14 @@ Last Worked on: November 15th   Hudson Fleurimond
         . CSS styles get whatever is on the home, We need to give everything a style or CSS components
             so the default isn't the same thing everywhere,
         . Adding Alerts and Error Notifications
-        . Renaming of variables
 
     Concerns:
-        . Add and change state to an User object
         . Change post method form
+        . Redo Entire page with material ui
 */
-import React from 'react'
-import Axios from 'axios'
-import { useHistory, withRouter } from "react-router-dom";
-import Login from '../pages/Login';
+import React from 'react';
+import Axios from 'axios';
+import {withRouter } from "react-router-dom";
 
 // LoginForm class
 class LoginForm extends React.Component
@@ -33,7 +31,7 @@ class LoginForm extends React.Component
         super(props);
         this.state = {
             email: "",
-            password: "",
+            password: ""
         }
         this.getEmail = this.getEmail.bind(this);
         this.getPassword = this.getPassword.bind(this);
@@ -52,14 +50,16 @@ class LoginForm extends React.Component
         handling user logins. Upon successful Login, redirect to the Task's Page
         and send along the response.
     */
-    handleSubmit(event) 
+    handleSubmit (event)
     {
-        event.preventDefault()
+        event.preventDefault();
+        const { history } = this.props;
+
         const person = {
             email: this.state.email,
             password: this.state.password
         };
-        const { history } = this.props;
+        
         Axios.post('http://localhost:5000/users/login', person)
             .then(function(response) {
                 history.push({
@@ -67,17 +67,15 @@ class LoginForm extends React.Component
                     response
                 });
             })
-            .catch(function(error) {
-                console.log(error);
-            });
+            .catch(function(error) {});
 
         this.setState({ email: "", password: "" })
     }
     render()
     {
         return (
-            <div >
-            <form onSubmit = { this.handleSubmit} >
+            <div>
+            <form onSubmit = {this.handleSubmit} >
                 <label >
                     Email: <input type = "text" value = { this.state.email } onChange = { this.getEmail }/> 
                 </label> 
@@ -85,9 +83,9 @@ class LoginForm extends React.Component
                 <label >
                     Password: <input type = "password" value = { this.state.password } onChange = { this.getPassword }/> 
                 </label>    
-                <input type = "submit" value = "Submit" />
+                <input type = "submit" value = "Login" />
             </form> 
-        </div >
+        </div>
         )
     }
 }

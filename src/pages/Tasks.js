@@ -1,24 +1,16 @@
 /*
 -------------------- Log File --------------------
-Last Worked on: November 16th   Hudson Fleurimond
+Last Worked on: November 24th   Hudson Fleurimond
     Known Issues:
-        . Date Format is an issue, cause multiple logs to the console which is causing unnecessary load
-        . Edit Task isn't Saving the Edits, Error 400
-        . When opening a previous Task, Date appears and then disappears, or currentDate Appears
-        . getTask giving a Error 401 (Unauthorized), this needs to be fixed because somehow, it isn't doing the
-            initial render, at the moment the page relies on ComponentDidUpdate to retrieve the task
-        . ComponentDidUpdate is causing a memory leak, performance issue 
+        . After editing a previous task and wanting to create a new Task, the edited date appears
 
     What Needs Work:
-        . Reread and update comments / add more comments
         . UI Styling, UI needs an overhaul of course, only implementation has been done
-        . CSS styles get whatever is on the home, We need to give everything a style or CSS components
-            so the default isn't the same thing everywhere,
         . Adding Alerts and Error Notifications
 
     Concerns:
-        . ComponentDidUpdate, maybe should have a timer so it isn't updating every single second or a strict condition variable
-            A timer that resets every 5 minutes should suffice
+        . Add a conditon for ComponenetDidUpdate
+        . Add condition to reset date to new date after editing a previous task's date and then creating a new Task
 
     IMPORTANT: Unauthorized Error 401 was fixed by making ComponentDidMount async and putting an await on setRoutes,
                 Issue was the tokens wasn't being set before calling getTask
@@ -28,11 +20,18 @@ import Axios from 'axios'
 import {withRouter } from "react-router-dom";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DateFnsUtils from '@date-io/date-fns';
+import Grid from '@material-ui/core/Grid';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider'
+import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
 import './../styles.css'
 
 // Tasks Class
@@ -40,22 +39,25 @@ class Tasks extends React.Component {
     // Constructor for Tasks Class
     /*
         State Declarations
-            tasks:      State array for holding all of the task objects for the respective user, set to empty initially
-            open:       State for dealing with Material-UI dialog control, This is specific for viewing the Create Task
+            taskArr:    State array for holding all of the task objects for the user
+            taskCreate: State for dealing with Material-UI dialog control, This is specific for viewing the Create Task
                         Dialog, set to false so dialog doesn't open unless called
             taskView:   State for dealing with Material-UI dialog control, This is specific for viewing the View Task 
                         Dialog, set to false so dialog doesn't open unless called
             user:       State object for holding the User information, The id of the User, Token for authentication, 
                         set to empty initially
             task:       State object for holding the Task information for a specific task, The description of the Task,
-                        the Due Date it should be completed, if it has been completed and the owner of the task (User ID)
+                        the Due Date it should be completed and if it has been completed
+            taskID:     State for holding the ID of a task
+
+            deleteConfirmation:     State for controling the view of the delete confirmation dialog
     */
     constructor(props) 
     {
         super(props);
         this.state = {
-            tasks: [],
-            open: false,
+            taskArr: [],
+            taskCreate: false,
             taskView: false,
             user: {
                 id: "",
@@ -63,18 +65,18 @@ class Tasks extends React.Component {
             },
             task: {
                 description: "",
-                dueDate: (new Date()).toISOString().split('T')[0],
+                dueDate: new Date(),
                 completed: false,
-                owner: ""
-            }
+            },
+            taskID: '',
+            deleteConfirmation: false
         }
     }
 // --------------------------------------------- Page Rendering Functions ---------------------------------------------------------------------
     /*
-        This function is responsible for calling the necessary components to mount to the page before the page render
-        It's intended purpose is to call the function setRoute to set up the User information and then call the function
-        getTasks to get all of the tasks associated with this user. This is extremely important to render anything that 
-        needs to be fetched from the server (database) before the page loads
+        This function is responsible for calling the necessary components to mount to the page before the page makes it's inital
+        render. It's intended purpose is to call the function setRoute to set up the User information and then call the function
+        getUserInfo to get the informtaion of the account associated with this user.
     */
     async componentDidMount()
     {
@@ -82,29 +84,28 @@ class Tasks extends React.Component {
         this.getTasks();
     }
     /*
-        This function is responsible for calling the necessary components to remount to the page before the page after the
-        page has done it's initial render. It's intended purpose is to call the function getTasks again to get all of the tasks 
-        that may have been added since the initial render associated with this user. This is extremely important to re-render the
-        page.
+        This function is responsible for updating the page. the page will re-render updating any 
+        information that has changed such as adding new tasks.
     */
     componentDidUpdate()
     {
         this.getTasks();
     }
     /*
-        This function is responsible for setting up the necessary information needed to make calls to the DB and navigating, through the
-        application. 
-
-            const { location } = this.props; 
-                This is extremely important as it allows us to receive data that was passed to the page, data such as the token needed for 
-                authentication and the User ID. Imported with the import {withRouter } from "react-router-dom"; module
-
-        We then set our User State variable to the data that was passed from the previous page.
+       This function is responsible for setting up the necessary information needed to make calls to the DB and navigating, through the
+       application. We then set the user state object to the data that was passed from the previous page or from the response. If the user 
+       object or response object is undefined, the this page is trying to be accessed without having proper authentication.
     */
     setRoute() 
     {
         const { location } = this.props;
-        if(location.response !== undefined)
+        const { history } = this.props;
+
+       if(location.user === undefined && location.response === undefined)
+       {
+            history.push({pathname:'/'});
+       }
+       else if(location.response !== undefined)
         {
             this.setState({
                 user:{
@@ -112,12 +113,6 @@ class Tasks extends React.Component {
                     id: location.response.data.user._id,
                     token: location.response.data.token
             }})
-            this.setState({
-                task:{
-                    ...this.state.task,
-                    owner: location.response.data.user._id,
-            }})
-            console.log("From Response", location.response.data.token)
         }
         else
         {
@@ -127,52 +122,41 @@ class Tasks extends React.Component {
                     id: location.user.id,
                     token: location.user.token
             }})
-            this.setState({
-                task:{
-                    ...this.state.task,
-                    owner: location.user.id,
-            }})
-            console.log("From User", location.user.token)
         }
     }
     /*
-        This function is responsible for getting all of the tasks associated with this user, being that we should have already
-        set up the routes, we can now make a GET request to our server and set our tasks State to our response.
+        This function is responsible for retrieving the tasks associated with the account. If the request was successful
+        then the taskArr state object is updated with the information found from the database.
     */
     getTasks()
     {
-        const { location } = this.props;
-        console.log('Fromt getTask', this.state.user.token)
         Axios({
             method: 'GET',
-            url: 'http://192.168.50.103:5000/tasks',
-            //headers: {"Authorization" : `Bearer ${location.response.data.token}`}
+            url: 'http://localhost:5000/tasks',
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
-            this.setState({tasks: response.data})
+            this.setState({taskArr: response.data})
         }).catch(function(error){
             console.log(error)
         })
     }
 // --------------------------------------------- Creating Tasks Functions ---------------------------------------------------------------------
     /*
-        This function is responsible for creating a task and posting it to the database. We send the task state as it
-        should contain all of the information the user wants in this specific task. If the operation was a success and 
-        we get a response of code 201, then we can close the dialog window by changing it's open state to false.
+        This function is responsible for creating a task and making a POST request to the database. The task state object
+        is sent to the database and if the operation was sucessful, the response code should be code 201 and the taskCreate 
+        state is set to true.
     */
     createTask = () => 
     {
-        const { location } = this.props;
         Axios({
             method: 'POST',
-            url: 'http://192.168.50.103:5000/tasks',
+            url: 'http://localhost:5000/tasks',
             data: this.state.task,
-            //headers: {"Authorization" : `Bearer ${location.response.data.token}`}
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
             if(response.status === 201)
             {
-                this.setState({open: false})
+                this.setState({taskCreate: false})
             }
         })
         .catch(function(error) {
@@ -180,8 +164,7 @@ class Tasks extends React.Component {
         })
     }
     /*
-        This function is responsible for setting and or updating our description variable in the task State.
-        It also sets the owner for this task.
+        This function is responsible for setting and or updating the description variable in the task state object.
     */    
     setDescription = (e) =>
     {
@@ -189,52 +172,52 @@ class Tasks extends React.Component {
             task:{
                 ...this.state.task,
                 description: e.target.value,
-                //owner: this.state.user.id
         }})
     }
     /*
-        This function is responsible for setting and or updating our dueDate variable in the task State.
+        This function is responsible for setting and or updating the dueDate variable in the task state object.
     */
-    setDate = (e) =>
+    setDate = (date) =>
     {
         this.setState({
             task:{
                 ...this.state.task,
-                date: e.target.value
+                dueDate: date
         }})
     }
-    /*setOwner = (e) =>
+    /*
+        This function is responsible for setting and or updating the completed variable in the task state object.
+    */
+    setCompleted = (event) =>
     {
         this.setState({
             task:{
                 ...this.state.task,
-                owner: this.state.user.id
+                completed: event.target.checked
         }})
-    }*/
+    }
     /*
-        This function is responsible for opening the Create Dialog window by setting the open State to true.
+        This function is responsible for opening the Create Dialog window by setting the taskCreate state to true.
     */
     createDialogOpen = () => {
-        this.setState({open: true})
+        this.setState({taskCreate: true})
     };
     /*
-        This function is responsible for closing the Create Dialog window by setting the open State to false.
+        This function is responsible for closing the Create Dialog window by setting the taskCreate state to false.
     */
     createDialogClose = () => {
-        this.setState({ open: false });
+        this.setState({ taskCreate: false });
     };
 // --------------------------------------------- Reading Tasks(View) Functions ---------------------------------------------------------------------
     /*
-        This function is responsible for opening the Create Dialog window by setting the open State to true,
-        and this function has a GET request to the database to retrieve a specific Task when supplied the Task
-        ID for it. It updates the task State to contain the data retrieved from the database.
+        This function has a GET request to the database to retrieve a specific Task when supplied the Task
+        ID. This function is responsible for opening the View Dialog window by setting the taskView state to true.
     */
     viewDialogOpen(TaskID) {
-        const { location } = this.props;
+
         Axios({
             method: 'GET',
-            url: 'http://192.168.50.103:5000/tasks/' + TaskID,
-            //headers: {"Authorization" : `Bearer ${location.response.data.token}`}
+            url: 'http://localhost:5000/tasks/' + TaskID,
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
             this.setState({
@@ -242,7 +225,10 @@ class Tasks extends React.Component {
                     ...this.state.task,
                     description: response.data.description,
                     dueDate: response.data.dueDate,
+                    completed: response.data.completed
             }})
+            this.setState({
+                taskID: TaskID})
         })
         .catch(function(error) {
             console.log(error);
@@ -250,20 +236,22 @@ class Tasks extends React.Component {
         this.setState({taskView: true})
     };
     /*
-        This function is responsible for closing the View Dialog window by setting the taskView State to false.
+        This function is responsible for closing the View Dialog window by setting the taskView state to false.
     */
     viewDialogClose = () => {
         this.setState({ taskView: false });
     };
 // --------------------------------------------- Updating Functions ---------------------------------------------------------------------
+    /*
+        This function is responsible for updating the information associated with a specific task. The user is able to 
+        change the description, due date, mark it as completed and delete as task. If the request was successful then the 
+        task state object is updated with the information found from the database.
+    */
     editTask = (TaskID) => {
-        const { history } = this.props;
-        console.log(this.state.task)
         Axios({
             method: 'PATCH',
-            url: 'http://192.168.50.103:5000/tasks/' + TaskID,
+            url: 'http://localhost:5000/tasks/' + TaskID,
             data: this.state.task,
-            //headers: {"Authorization" : `Bearer ${location.response.data.token}`}
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
             this.setState({ taskView: false });
@@ -271,24 +259,43 @@ class Tasks extends React.Component {
         .catch(function(error) {
             console.log(error);
         })
+        
     }
 // --------------------------------------------- Deleting Tasks Functions ---------------------------------------------------------------------
+    /*
+        This function is responsible for deleting a task. This functions sends a DELETE request to the
+        database and if the request was sucessful, the task is deleted.
+    */
     deleteTask = (TaskID) => {
-        const { history } = this.props;
         Axios({
             method: 'DELETE',
-            url: 'http://192.168.50.103:5000/tasks/' + TaskID,
+            url: 'http://localhost:5000/tasks/' + TaskID,
             data: this.state.task,
-            //headers: {"Authorization" : `Bearer ${location.response.data.token}`}
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
+            this.setState({ deleteConfirmation: false });
             this.setState({ taskView: false });
         })
         .catch(function(error) {
             console.log(error);
         })
     }
+    /*
+        This function is responsible for updating the deleteConfirmation state.
+    */
+    openDialog = () => {
+        this.setState({ deleteConfirmation: true });
+    };
+    /*
+        This function is responsible for updating the deleteConfirmation state.
+    */
+    closeDialog = () => {
+        this.setState({ deleteConfirmation: false });
+    };
 // --------------------------------------------- Navigating Functions -------------------------------------------------------------------------
+    /*
+        This function is responsible for navigating to the Tasks page and pass the user state object.
+   */
     navigateTask = () => {
         const { history } = this.props;
         const user = this.state.user
@@ -298,6 +305,9 @@ class Tasks extends React.Component {
             user
         });
     }
+    /*
+        This function is responsible for navigating to the Settings(User) page and pass the user state object.
+   */
     navigateSetitng = () => {
         const { history } = this.props;
         const user = this.state.user
@@ -307,13 +317,27 @@ class Tasks extends React.Component {
             user
         });
     }
+    /*
+        This function is responsible for navigating to the Goals page and pass the user state object.
+   */
+    navigateGoal = () => {
+        const { history } = this.props;
+        const user = this.state.user
+
+        history.push({
+            pathname:'/goals',
+            user
+        });
+    }
+    /*
+        This function is responsible for handling the user logging out and redirecting the user to the home page.
+    */
     logout = () => {
         const { history } = this.props;
         Axios({
             method: 'POST',
-            url: 'http://192.168.50.103:5000/users/logout',
+            url: 'http://localhost:5000/users/logout',
             data: this.state.user,
-            //headers: {"Authorization" : `Bearer ${location.response.data.token}`}
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
             history.push({pathname:'/'});
@@ -326,31 +350,33 @@ class Tasks extends React.Component {
     {
         return(
             <div>
-                <div className="headerContainer">
-                    <div className="headerBox">
-                        <Button variant="contained" color="primary" >
-                            Goals
-                        </Button>
-                        <Button variant="contained" color="primary" onClick={this.navigateTask}>
-                            Tasks
-                        </Button>
-                        <Button variant="contained" color="primary" >
-                            Notes
-                        </Button>
-                        <Button variant="contained" color="primary" onClick={this.navigateSetitng}>
-                            Settings
-                        </Button>
-                        <Button variant="contained" color="primary" onClick={this.logout}>
-                            Sign-Out
-                        </Button>
-                    </div>
+                <div className="taskbarContainer">
+                        <div className="taskbarLeft">
+                            <Button variant="contained" color="primary" onClick={this.navigateGoal}>
+                                Goals
+                            </Button>
+                            <Button variant="contained" color="primary" onClick={this.navigateTask}>
+                                Tasks
+                            </Button>
+                            <Button variant="contained" color="primary" >
+                                Notes
+                            </Button>
+                        </div>
+                        <div className="taskbarRight">
+                            <Button variant="contained" color="primary" onClick={this.navigateSetitng}>
+                                Settings
+                            </Button>
+                            <Button variant="contained" color="primary" onClick={this.logout}>
+                                Sign-Out
+                            </Button>
+                        </div>
                 </div>
 
                 <div>
                 <Button variant="contained" color="primary" onClick={this.createDialogOpen}>
                     Create task 
                 </Button>
-                <Dialog open={this.state.open} onClose={this.createDialogClose} aria-labelledby="form-dialog-title">
+                <Dialog open={this.state.taskCreate} onClose={this.createDialogClose} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Create Task</DialogTitle>
                     <DialogContent>
                         <TextField
@@ -362,16 +388,19 @@ class Tasks extends React.Component {
                             type="text"
                             fullWidth
                         />
-                        <TextField
-                            label="Due Date"
-                            format={"YYYY-MM-DD"}
-                            type="date"
-                            onChange={this.setDate}
-                            InputLabelProps={{
-                            shrink: true,
-                            }}
-                        />
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <Grid container justify="space-around">
+                                <KeyboardDatePicker
+                                    variant="inline"
+                                    format="MM/dd/yyyy"
+                                    margin="normal"
+                                    autoOk="true"
+                                    value={this.state.task.dueDate}
+                                    onChange={this.setDate}/>
+                            </Grid>
+                        </MuiPickersUtilsProvider>
                     </DialogContent>
+
                     <DialogActions>
                         <Button onClick={this.createDialogClose} color="primary">
                             Cancel
@@ -387,11 +416,15 @@ class Tasks extends React.Component {
                 </div>
 
                 <div>
-                    {this.state.tasks.map(task => (
+                    {this.state.taskArr.map(task => (
                         <div>
-                        <button key={task._id} onClick={() => this.viewDialogOpen(task._id)}>
-                                <div> {task.description} </div>
-                        </button>
+                            <List component="nav" aria-label="mailbox folders">
+                                <ListItem button key={task._id} onClick={() => this.viewDialogOpen(task._id)}>
+                                    <ListItemText primary={task.description} />
+                                </ListItem>
+                                <Divider />
+                            </List>
+                        
                                 <Dialog open={this.state.taskView} onClose={this.viewDialogClose} aria-labelledby="form-dialog-title2">
                                 <DialogTitle id="form-dialog-title2">Edit Task</DialogTitle>
                                 <DialogContent>
@@ -405,28 +438,53 @@ class Tasks extends React.Component {
                                         type="text"
                                         fullWidth
                                     />
-                                    <TextField
-                                        label="Due Date"
-                                        format={"YYYY-MM-DD"}
-                                        type="date"
-                                        //value={this.state.task.dueDate}
-                                        //onChange={this.setDate}
-                                        InputLabelProps={{
-                                        shrink: true,
-                                        }}
-                                    />
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                        <Grid container justify="space-around">
+                                            <KeyboardDatePicker
+                                                variant="inline"
+                                                format="MM/dd/yyyy"
+                                                margin="normal"
+                                                autoOk="true"
+                                                label="Due Date"
+                                                value={this.state.task.dueDate}
+                                                onChange={this.setDate}/>
+                                        </Grid>
+                                    </MuiPickersUtilsProvider>
+                                    <div>
+                                        Completed
+                                        <Checkbox
+                                            labelPlacement="start"
+                                            color="primary"
+                                            checked={this.state.task.completed}
+                                            onChange={this.setCompleted} />
+                                    </div>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button onClick={() => this.deleteTask(task._id)} color="primary">
+                                    <Button onClick={this.openDialog} color="primary">
                                         Delete
                                     </Button>
                                     <Button onClick={this.viewDialogClose} color="primary">
                                         Cancel
                                     </Button>
-                                    <Button onClick={() => this.editTask(task._id)} color="primary">
+                                    <Button onClick={() => this.editTask(this.state.taskID)} color="primary">
                                         Save Changes
                                     </Button>
                                 </DialogActions>
+                                </Dialog>
+
+                                <Dialog open={this.state.deleteConfirmation} disableBackdropClick="true" onClose={this.closeDialog} aria-labelledby="form-dialog-title">
+                                    <DialogTitle id="form-dialog-title">Confirmation Required</DialogTitle>
+                                    <DialogContent> 
+                                        Are you sure you want to this task?
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={() => this.deleteTask(this.state.taskID)}>
+                                            Yes
+                                        </Button>
+                                        <Button onClick={this.closeDialog}>
+                                            No
+                                        </Button>
+                                    </DialogActions>
                                 </Dialog> 
                         </div>
                     ))}
