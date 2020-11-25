@@ -112,7 +112,7 @@ class Goals extends React.Component
         }).then((response) => {
             this.setState({
                 goalRes:{
-                    ...this.state.task,
+                    ...this.state.goalRes,
                     startDate: response.data.startDate,
                     endDate: response.data.endDate,
                     percentComplete: response.data.percentComplete
