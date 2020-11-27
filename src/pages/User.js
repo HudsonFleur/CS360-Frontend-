@@ -119,7 +119,7 @@ class User extends React.Component
     */
     updateUserInfo = () => 
     {
-        if(this.state.password !== "")
+        if(this.state.password !== "" && this.state.password.length >= 7)
         {
             this.setState({
                 userInfo:{
