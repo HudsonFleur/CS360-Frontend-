@@ -364,7 +364,7 @@ class User extends React.Component
                 <Dialog open={this.state.deleteConfirmation} disableBackdropClick="true" onClose={this.closeDialog} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Confirmation Required</DialogTitle>
                     <DialogContent> 
-                        Are you sure you want to delete your Accout? 
+                        Are you sure you want to delete your Account? 
                         Once you confirm, all of your data will be permanently deleted.
                     </DialogContent>
                     <DialogActions>
