@@ -118,13 +118,7 @@ class RegisterForm extends React.Component {
                 {
                     history.push({pathname:'/tasks', response});
                 }
-            }).catch((error) =>
-            {
-                if(error.response.status === 400)
-                {
-                    this.setState({loginFailed: true});
-                }
-            })
+            }).catch((error) =>{})
         }
     }
 
