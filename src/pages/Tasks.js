@@ -132,7 +132,7 @@ class Tasks extends React.Component {
     {
         Axios({
             method: 'GET',
-            url: 'http://localhost:5000/tasks',
+            url: 'https://cs360-task-manager.herokuapp.com/tasks',
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
             this.setState({taskArr: response.data})
@@ -150,7 +150,7 @@ class Tasks extends React.Component {
     {
         Axios({
             method: 'POST',
-            url: 'http://localhost:5000/tasks',
+            url: 'https://cs360-task-manager.herokuapp.com/tasks',
             data: this.state.task,
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
@@ -217,7 +217,7 @@ class Tasks extends React.Component {
 
         Axios({
             method: 'GET',
-            url: 'http://localhost:5000/tasks/' + TaskID,
+            url: 'https://cs360-task-manager.herokuapp.com/tasks/' + TaskID,
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
             this.setState({
@@ -250,7 +250,7 @@ class Tasks extends React.Component {
     editTask = (TaskID) => {
         Axios({
             method: 'PATCH',
-            url: 'http://localhost:5000/tasks/' + TaskID,
+            url: 'https://cs360-task-manager.herokuapp.com/tasks/' + TaskID,
             data: this.state.task,
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
@@ -269,7 +269,7 @@ class Tasks extends React.Component {
     deleteTask = (TaskID) => {
         Axios({
             method: 'DELETE',
-            url: 'http://localhost:5000/tasks/' + TaskID,
+            url: 'https://cs360-task-manager.herokuapp.com/tasks/' + TaskID,
             data: this.state.task,
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
@@ -336,7 +336,7 @@ class Tasks extends React.Component {
         const { history } = this.props;
         Axios({
             method: 'POST',
-            url: 'http://localhost:5000/users/logout',
+            url: 'https://cs360-task-manager.herokuapp.com/users/logout',
             data: this.state.user,
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {

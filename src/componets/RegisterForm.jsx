@@ -111,7 +111,7 @@ class RegisterForm extends React.Component {
         else {
             Axios({
                 method: 'POST',
-                url: 'http://localhost:5000/users',
+                url: 'https://cs360-task-manager.herokuapp.com/users',
                 data: this.state.user
             }).then(function(response) {
                 if(response.status === 200)

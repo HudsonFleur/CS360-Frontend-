@@ -106,7 +106,7 @@ class Goals extends React.Component
     {
         Axios({
             method: 'POST',
-            url: 'http://localhost:5000/goals/create',
+            url: 'https://cs360-task-manager.herokuapp.com/goals/create',
             data: this.state.goal,
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
@@ -223,7 +223,7 @@ class Goals extends React.Component
         const { history } = this.props;
         Axios({
             method: 'POST',
-            url: 'http://localhost:5000/users/logout',
+            url: 'https://cs360-task-manager.herokuapp.com/users/logout',
             data: this.state.user,
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {

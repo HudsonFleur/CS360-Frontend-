@@ -100,7 +100,7 @@ class User extends React.Component
     {
         Axios({
             method: 'GET',
-            url: 'http://localhost:5000/users/me',
+            url: 'https://cs360-task-manager.herokuapp.com/users/me',
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
             this.setState({
@@ -130,7 +130,7 @@ class User extends React.Component
         
         Axios({
             method: 'PATCH',
-            url: 'http://localhost:5000/users/me',
+            url: 'https://cs360-task-manager.herokuapp.com/users/me',
             data: this.state.userInfo,
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
           }).then((response) => {
@@ -212,7 +212,7 @@ class User extends React.Component
         const { history } = this.props;
         Axios({
             method: 'DELETE',
-            url: 'http://localhost:5000/users/me',
+            url: 'https://cs360-task-manager.herokuapp.com/users/me',
             data: this.state.userInfo,
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
           }).then((response) => {
@@ -263,7 +263,7 @@ class User extends React.Component
         const { history } = this.props;
         Axios({
             method: 'POST',
-            url: 'http://localhost:5000/users/logout',
+            url: 'https://cs360-task-manager.herokuapp.com/users/logout',
             data: this.state.user,
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
