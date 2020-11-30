@@ -146,8 +146,26 @@ class Tasks extends React.Component {
         is sent to the database and if the operation was sucessful, the response code should be code 201 and the taskCreate 
         state is set to true.
     */
+   dateAddOffset = () =>
+   {
+       let offset = (new Date().getTimezoneOffset()) / 60;
+       this.state.task.dueDate.setHours(23 + offset)
+       this.state.task.dueDate.setMinutes(59)
+       this.state.task.dueDate.setSeconds(59)
+       this.state.task.dueDate.setMilliseconds(999)
+   }
+   dateSubOffset = (date) =>
+   {
+       let offset = (new Date().getTimezoneOffset()) / 60;
+      let newDate = new Date(date);
+      newDate.setHours(23 - offset)
+       
+       return newDate
+   }
     createTask = () => 
     {
+        this.dateAddOffset()
+        
         Axios({
             method: 'POST',
             url: 'https://cs360-task-manager.herokuapp.com/tasks',
@@ -156,6 +174,7 @@ class Tasks extends React.Component {
         }).then((response) => {
             if(response.status === 201)
             {
+                console.log(this.state.task.dueDate)
                 this.setState({taskCreate: false})
             }
         })
@@ -292,6 +311,13 @@ class Tasks extends React.Component {
     closeDialog = () => {
         this.setState({ deleteConfirmation: false });
     };
+    checkCompleted(completed)
+    {  
+        if(completed === true)
+        return 'Completed'
+        else
+        return 'Not Completed'
+    }
 // --------------------------------------------- Navigating Functions -------------------------------------------------------------------------
     /*
         This function is responsible for navigating to the Tasks page and pass the user state object.
@@ -421,6 +447,8 @@ class Tasks extends React.Component {
                             <List component="nav" aria-label="mailbox folders">
                                 <ListItem button key={task._id} onClick={() => this.viewDialogOpen(task._id)}>
                                     <ListItemText primary={task.description} />
+                                    <ListItemText primary={this.dateSubOffset(task.dueDate).toDateString() }/>
+                                    <ListItemText primary={this.checkCompleted(task.completed)} />
                                 </ListItem>
                                 <Divider />
                             </List>
