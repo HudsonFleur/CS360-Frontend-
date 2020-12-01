@@ -405,7 +405,7 @@ class Tasks extends React.Component {
                                     format="MM/dd/yyyy"
                                     margin="normal"
                                     autoOk="true"
-                                    value={new Date()}
+                                    value={this.state.task.dueDate}
                                     onChange={this.setDate}/>
                             </Grid>
                         </MuiPickersUtilsProvider>
