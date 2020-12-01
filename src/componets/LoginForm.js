@@ -8,7 +8,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-/* LoginForm Class */
+/* LoginForm Class Component*/
 class LoginForm extends React.Component
 {   /* Constructor for Login Class */
     /*
@@ -27,28 +27,29 @@ class LoginForm extends React.Component
             loginFailed: false
         }
     }
+
     /* Function to get the User Email */
     getEmail = (event) => {
         this.setState({ user:{ ...this.state.user, email: event.target.value}})
     }
+
     /* Function to get the User Password */
     getPassword = (event) => {
         this.setState({ user:{ ...this.state.user, password: event.target.value}})
     }
-    /*
-        This function is responsible for updating the loginFailed state.
-    */
+
+    /* This function is responsible for updating the loginFailed state. */
     closeDialog = () => {
         this.setState({ loginFailed: false });
-    };
-    /* Function to send a POST request to the database (server), create a person object
-        which contains the User's Email and User's Password and POST to the route for
-        handling user logins. Upon successful Login, redirect to the Task's Page
-        and send along the response.
+    }
+
+    /*  Function to send a POST request to the database (server) and the user state object as data
+        which contains the email and password of the user. Upon successful login the database will send
+        a status code of 200 and the user will be redirected to the Task's Page with the response from the 
+        database. If the login was unsuccessful and the status code was 400, then the user had entered the
+        wrong username and password and will be send a prompt noting of this error.
     */
-   
-    handleSubmit = () =>
-    {
+    handleSubmit = () => {
         const { history } = this.props;
 
         Axios({
@@ -95,7 +96,7 @@ class LoginForm extends React.Component
                 </div>
                 <div>
                     <Button onClick={() => this.handleSubmit()}>
-                            Login
+                        Login
                     </Button>
                 </div>
 

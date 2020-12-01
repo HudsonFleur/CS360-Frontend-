@@ -1,20 +1,3 @@
-/*
--------------------- Log File --------------------
-Last Worked on: November 24th   Hudson Fleurimond
-    Known Issues:
-        . After editing a previous task and wanting to create a new Task, the edited date appears
-
-    What Needs Work:
-        . UI Styling, UI needs an overhaul of course, only implementation has been done
-        . Adding Alerts and Error Notifications
-
-    Concerns:
-        . Add a conditon for ComponenetDidUpdate
-        . Add condition to reset date to new date after editing a previous task's date and then creating a new Task
-
-    IMPORTANT: Unauthorized Error 401 was fixed by making ComponentDidMount async and putting an await on setRoutes,
-                Issue was the tokens wasn't being set before calling getTask
-*/
 import React from 'react'
 import Axios from 'axios'
 import {withRouter } from "react-router-dom";
@@ -30,13 +13,13 @@ import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider'
+import Divider from '@material-ui/core/Divider';
 import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
 import './../styles.css'
 
-// Tasks Class
+/* Tasks Class Component */
 class Tasks extends React.Component {
-    // Constructor for Tasks Class
+    /* Constructor for Tasks Class */
     /*
         State Declarations
             taskArr:    State array for holding all of the task objects for the user
@@ -49,14 +32,15 @@ class Tasks extends React.Component {
             task:       State object for holding the Task information for a specific task, The description of the Task,
                         the Due Date it should be completed and if it has been completed
             taskID:     State for holding the ID of a task
-
             deleteConfirmation:     State for controling the view of the delete confirmation dialog
+            updatedTask:            State for controlling the condtion on if the page should update for any new changes made
     */
     constructor(props) 
     {
         super(props);
         this.state = {
             taskArr: [],
+            prevTaskArr: [],
             taskCreate: false,
             taskView: false,
             user: {
@@ -69,35 +53,40 @@ class Tasks extends React.Component {
                 completed: false,
             },
             taskID: '',
-            deleteConfirmation: false
+            deleteConfirmation: false,
+            updatedTask: false
         }
     }
-// --------------------------------------------- Page Rendering Functions ---------------------------------------------------------------------
+
     /*
         This function is responsible for calling the necessary components to mount to the page before the page makes it's inital
-        render. It's intended purpose is to call the function setRoute to set up the User information and then call the function
-        getUserInfo to get the informtaion of the account associated with this user.
+        render. It's intended purpose is to call the function setRoute to set up the user state object with the id and token for
+        the user and afterwards call the function getTasks to get all of the Tasks associated with this user.
     */
-    async componentDidMount()
-    {
+    async componentDidMount() {
         await this.setRoute();
         this.getTasks();
     }
+
     /*
-        This function is responsible for updating the page. the page will re-render updating any 
-        information that has changed such as adding new tasks.
+        This function is responsible for updating the page by re rendering it. It checked to see
+        if the state updatedTask has been set to true and if so, will call getTasks to update the 
+        information.
     */
-    componentDidUpdate()
-    {
-        this.getTasks();
+    componentDidUpdate() {
+        if(this.state.updatedTask === true )
+        {
+            this.getTasks();
+            this.setState({updatedTask: false})
+        }
     }
-    /*
-       This function is responsible for setting up the necessary information needed to make calls to the DB and navigating, through the
-       application. We then set the user state object to the data that was passed from the previous page or from the response. If the user 
-       object or response object is undefined, the this page is trying to be accessed without having proper authentication.
+
+    /* 
+       This function is responsible for setting up the necessary information needed to make calls to the database and navigating, through the
+       application. We then set the user state object to the data that was passed from the previous page. If the user object is 
+       undefined, the this page is trying to be accessed without having proper authentication.
     */
-    setRoute() 
-    {
+    setRoute() {
         const { location } = this.props;
         const { history } = this.props;
 
@@ -124,12 +113,12 @@ class Tasks extends React.Component {
             }})
         }
     }
+
     /*
         This function is responsible for retrieving the tasks associated with the account. If the request was successful
         then the taskArr state object is updated with the information found from the database.
     */
-    getTasks()
-    {
+    getTasks() {
         Axios({
             method: 'GET',
             url: 'https://cs360-task-manager.herokuapp.com/tasks',
@@ -140,30 +129,40 @@ class Tasks extends React.Component {
             console.log(error)
         })
     }
-// --------------------------------------------- Creating Tasks Functions ---------------------------------------------------------------------
+
     /*
-        This function is responsible for creating a task and making a POST request to the database. The task state object
-        is sent to the database and if the operation was sucessful, the response code should be code 201 and the taskCreate 
-        state is set to true.
+        This function is responsible for truncating the description so it will appear on the screen without over lapping
+        into the other elements that need to be displayed. If a task description is more than 45 characters, then take 
+        the first 40 character and display them.
     */
-   dateAddOffset = () =>
-   {
-       let offset = (new Date().getTimezoneOffset()) / 60;
-       this.state.task.dueDate.setHours(23 + offset)
-       this.state.task.dueDate.setMinutes(59)
-       this.state.task.dueDate.setSeconds(59)
-       this.state.task.dueDate.setMilliseconds(999)
-   }
-   dateSubOffset = (date) =>
-   {
-       let offset = (new Date().getTimezoneOffset()) / 60;
-      let newDate = new Date(date);
-      newDate.setHours(23 - offset)
-       
-       return newDate
-   }
-    createTask = () => 
-    {
+    truncateDescription(description) {
+        return description.length > 45 ? description.substring(0,40) + "..." : description
+    }
+
+    /* This function is responsible for adding the offset to accommodate for the UTC time setting that the database is set to. */
+    dateAddOffset = () => {
+        let offset = (new Date().getTimezoneOffset()) / 60;
+        this.state.task.dueDate.setHours(23 + offset)
+        this.state.task.dueDate.setMinutes(59)
+        this.state.task.dueDate.setSeconds(59)
+        this.state.task.dueDate.setMilliseconds(999)
+    }
+
+    /* This function is responsible for subtracting the offset to accommodate for the UTC time setting that the database is set to. */
+    dateSubOffset = (date) => {
+        let offset = (new Date().getTimezoneOffset()) / 60;
+        let newDate = new Date(date);
+        newDate.setHours(23 - offset)
+        
+        return newDate
+    }
+
+    /*
+        This function is responsible for creating a task and making a POST request to the database. The dateAddOffset function
+        is called and then the POST request to the database is made, The task state object is sent to the database and if the 
+        request was successful (status = 201) then the updatedTask state is set to true and the taskCreate state is set to false.
+    */
+    createTask = () => {
         this.dateAddOffset()
         
         Axios({
@@ -174,60 +173,50 @@ class Tasks extends React.Component {
         }).then((response) => {
             if(response.status === 201)
             {
-                console.log(this.state.task.dueDate)
+                this.setState({updatedTask: true})
                 this.setState({taskCreate: false})
             }
         })
-        .catch(function(error) {
-            console.log(error);
-        })
+        .catch(function(error) {})
     }
-    /*
-        This function is responsible for setting and or updating the description variable in the task state object.
-    */    
-    setDescription = (e) =>
-    {
+
+    /* This function is responsible for setting and or updating the description variable in the task state object. */    
+    setDescription = (e) => {
         this.setState({
             task:{
                 ...this.state.task,
                 description: e.target.value,
         }})
     }
-    /*
-        This function is responsible for setting and or updating the dueDate variable in the task state object.
-    */
-    setDate = (date) =>
-    {
+
+    /* This function is responsible for setting and or updating the dueDate variable in the task state object. */
+    setDate = (date) => {
         this.setState({
             task:{
                 ...this.state.task,
                 dueDate: date
         }})
     }
-    /*
-        This function is responsible for setting and or updating the completed variable in the task state object.
-    */
-    setCompleted = (event) =>
-    {
+
+    /* This function is responsible for setting and or updating the completed variable in the task state object. */
+    setCompleted = (event) => {
         this.setState({
             task:{
                 ...this.state.task,
                 completed: event.target.checked
         }})
     }
-    /*
-        This function is responsible for opening the Create Dialog window by setting the taskCreate state to true.
-    */
+
+    /* This function is responsible for opening the Create Dialog window by setting the taskCreate state to true. */
     createDialogOpen = () => {
         this.setState({taskCreate: true})
-    };
-    /*
-        This function is responsible for closing the Create Dialog window by setting the taskCreate state to false.
-    */
+    }
+
+    /* This function is responsible for closing the Create Dialog window by setting the taskCreate state to false. */
     createDialogClose = () => {
         this.setState({ taskCreate: false });
-    };
-// --------------------------------------------- Reading Tasks(View) Functions ---------------------------------------------------------------------
+    }
+
     /*
         This function has a GET request to the database to retrieve a specific Task when supplied the Task
         ID. This function is responsible for opening the View Dialog window by setting the taskView state to true.
@@ -253,18 +242,17 @@ class Tasks extends React.Component {
             console.log(error);
         })
         this.setState({taskView: true})
-    };
-    /*
-        This function is responsible for closing the View Dialog window by setting the taskView state to false.
-    */
+    }
+
+    /* This function is responsible for closing the View Dialog window by setting the taskView state to false. */
     viewDialogClose = () => {
         this.setState({ taskView: false });
-    };
-// --------------------------------------------- Updating Functions ---------------------------------------------------------------------
+    }
+
     /*
         This function is responsible for updating the information associated with a specific task. The user is able to 
         change the description, due date, mark it as completed and delete as task. If the request was successful then the 
-        task state object is updated with the information found from the database.
+        task state object is updated.
     */
     editTask = (TaskID) => {
         Axios({
@@ -273,6 +261,7 @@ class Tasks extends React.Component {
             data: this.state.task,
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
+            this.setState({updatedTask: true})
             this.setState({ taskView: false });
         })
         .catch(function(error) {
@@ -280,10 +269,11 @@ class Tasks extends React.Component {
         })
         
     }
-// --------------------------------------------- Deleting Tasks Functions ---------------------------------------------------------------------
+
     /*
         This function is responsible for deleting a task. This functions sends a DELETE request to the
-        database and if the request was sucessful, the task is deleted.
+        database and if the request was sucessful, the task is deleted, the updatedTask state is set to
+        true, the deleteConfirmation state is set to false and the taskView state is set to false.
     */
     deleteTask = (TaskID) => {
         Axios({
@@ -292,36 +282,36 @@ class Tasks extends React.Component {
             data: this.state.task,
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
+            this.setState({updatedTask: true})
             this.setState({ deleteConfirmation: false });
             this.setState({ taskView: false });
         })
-        .catch(function(error) {
-            console.log(error);
-        })
+        .catch(function(error) {})
     }
-    /*
-        This function is responsible for updating the deleteConfirmation state.
-    */
+
+    /* This function is responsible for updating the deleteConfirmation state. */
     openDialog = () => {
         this.setState({ deleteConfirmation: true });
-    };
-    /*
-        This function is responsible for updating the deleteConfirmation state.
-    */
+    }
+
+    /* This function is responsible for updating the deleteConfirmation state. */
     closeDialog = () => {
         this.setState({ deleteConfirmation: false });
-    };
-    checkCompleted(completed)
+    }
+
+    /* 
+        This function is responsible for checking to see if a task(boolean) is comepleted or not
+        an to return the correct string.
+    */
+    checkCompleted(task)
     {  
-        if(completed === true)
+        if(task === true)
         return 'Completed'
         else
         return 'Not Completed'
     }
-// --------------------------------------------- Navigating Functions -------------------------------------------------------------------------
-    /*
-        This function is responsible for navigating to the Tasks page and pass the user state object.
-   */
+
+    /* This function is responsible for navigating to the Tasks page and pass the user state object. */
     navigateTask = () => {
         const { history } = this.props;
         const user = this.state.user
@@ -331,9 +321,8 @@ class Tasks extends React.Component {
             user
         });
     }
-    /*
-        This function is responsible for navigating to the Settings(User) page and pass the user state object.
-   */
+
+    /* This function is responsible for navigating to the Settings(User) page and pass the user state object. */
     navigateSetitng = () => {
         const { history } = this.props;
         const user = this.state.user
@@ -343,9 +332,8 @@ class Tasks extends React.Component {
             user
         });
     }
-    /*
-        This function is responsible for navigating to the Goals page and pass the user state object.
-   */
+
+    /* This function is responsible for navigating to the Goals page and pass the user state object. */
     navigateGoal = () => {
         const { history } = this.props;
         const user = this.state.user
@@ -355,9 +343,8 @@ class Tasks extends React.Component {
             user
         });
     }
-    /*
-        This function is responsible for handling the user logging out and redirecting the user to the home page.
-    */
+
+    /* This function is responsible for handling the user logging out and redirecting the user to the home page. */
     logout = () => {
         const { history } = this.props;
         Axios({
@@ -383,9 +370,6 @@ class Tasks extends React.Component {
                             </Button>
                             <Button variant="contained" color="primary" onClick={this.navigateTask}>
                                 Tasks
-                            </Button>
-                            <Button variant="contained" color="primary" >
-                                Notes
                             </Button>
                         </div>
                         <div className="taskbarRight">
@@ -421,7 +405,7 @@ class Tasks extends React.Component {
                                     format="MM/dd/yyyy"
                                     margin="normal"
                                     autoOk="true"
-                                    value={this.state.task.dueDate}
+                                    value={new Date()}
                                     onChange={this.setDate}/>
                             </Grid>
                         </MuiPickersUtilsProvider>
@@ -436,9 +420,6 @@ class Tasks extends React.Component {
                         </Button>
                     </DialogActions>
                 </Dialog>
-
-                    <button className="button" type="button"> Sort By </button>
-                    <button className="button" type="button"> Trash </button>
                 </div>
 
                 <div>
@@ -446,7 +427,7 @@ class Tasks extends React.Component {
                         <div>
                             <List component="nav" aria-label="mailbox folders">
                                 <ListItem button key={task._id} onClick={() => this.viewDialogOpen(task._id)}>
-                                    <ListItemText primary={task.description} />
+                                    <ListItemText className="taskDescription" primary={this.truncateDescription(task.description)}/>
                                     <ListItemText primary={this.dateSubOffset(task.dueDate).toDateString() }/>
                                     <ListItemText primary={this.checkCompleted(task.completed)} />
                                 </ListItem>
@@ -521,4 +502,5 @@ class Tasks extends React.Component {
         )
     }
 }
+
 export default withRouter(Tasks)

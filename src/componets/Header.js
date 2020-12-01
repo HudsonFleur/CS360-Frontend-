@@ -2,8 +2,13 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import  './../styles.css';
 
+/* Header Class Component */
 class Header extends React.Component
 {
+    /*  
+        This Header Class Component serves as a navigation component navigating to the Home, About Us, 
+        Register and Login Page. 
+    */
     render()
     {
         return(

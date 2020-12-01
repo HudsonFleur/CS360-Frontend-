@@ -3,6 +3,7 @@ import Header from '../componets/Header';
 import RegisterForm from './../componets/RegisterForm';
 import  './../styles.css';
 
+/* Register Class Component */
 class Register extends React.Component
 {
     render()

@@ -8,7 +8,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-/* RegisterForm Class */
+/* RegisterForm Class Component */
 class RegisterForm extends React.Component {
     /* Constructor for RegisterForm Class */
     /*
@@ -35,64 +35,68 @@ class RegisterForm extends React.Component {
             passwordConfirmationValidation: false
         }
     }
-    // Function to set the User Name
+
+    /* Function to set the User Name */
     setName = (event) => {
         this.setState({ user:{ ...this.state.user, name: event.target.value}})
     }
-    // Function to set the User Email
+
+    /* Function to set the User Email */
     setEmail = (event) => {
         this.setState({ user:{ ...this.state.user, email: event.target.value}})
     }
-    // Function to set the User Password
+
+    /* Function to set the User Password */
     setPassword = (event) => {
         this.setState({ user:{ ...this.state.user, password: event.target.value}})
     }
-    // Function to set the confirmation password
+
+    /* Function to set the confirmation password */
     setConfirmPassword = (event) => {
         this.setState({ confirmPassword: event.target.value })
     }
-    /*
-        This function is responsible for updating the nameValidation state.
-    */
+
+    /* This function is responsible for updating the nameValidation state. */
     closeDialogN = () => {
         this.setState({ nameValidation: false });
-    };
-    /*
-        This function is responsible for updating the emailValidation state.
-    */
+    }
+
+    /* This function is responsible for updating the emailValidation state. */
     closeDialogE = () => {
         this.setState({ emailValidation: false });
-    };
-    /*
-        This function is responsible for updating the passwordValidation state.
-    */
+    }
+
+    /* This function is responsible for updating the passwordValidation state. */
     closeDialogP = () => {
         this.setState({ passwordValidation: false });
-    };
-    /*
-        This function is responsible for updating the passwordConfirmationValidation state.
-    */
+    }
+
+    /* This function is responsible for updating the passwordConfirmationValidation state. */
     closeDialogCP = () => {
         this.setState({ passwordConfirmationValidation: false });
-    };
+    }
+
     /* 
-        Function for chekcing to see if a email string is a valid email in the form of
+        Function utilzing a regex for checking to see if a email string is a valid email in the form of
         <string>@<string>.<string>
     */
     emailValidationFunc(email)
     {
         let mailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-        if (email.match(mailFormat))
-        {
-        return (true)
+        if (email.match(mailFormat)) {
+            return (true)
         }
-        return (false)
+        else {
+            return (false)
+        }
     }
 
-    /* Function to send a POST request to the database (server), create a person object
-        which contains the User's Name, User's Email and User's Password and POST to the route for
-        handling user registration. Upon successful Registration, redirect to the Task's Page
-        and send along the response.
+    /*  Function to send a POST request to the database (server) and the user state object as data
+        which contains the name, email and password of the user. This function also checks to make
+        sure the information the user enters conforms to the requirements set on the database for 
+        creating an account. Upon successful data validation then the function will post to the 
+        database and upon successful registration(status = 200), will redirect the user to the Task 
+        page, passing the response as a parameter.  
     */
     handleSubmit = () => {
         const { history } = this.props;
@@ -122,7 +126,8 @@ class RegisterForm extends React.Component {
         }
     }
 
-    render() {
+    render() 
+    {
         return ( 
         <div >
             <div>

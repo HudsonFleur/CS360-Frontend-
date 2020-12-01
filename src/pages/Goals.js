@@ -1,16 +1,3 @@
-/*
--------------------- Log File --------------------
-Last Worked on: November 24th   Hudson Fleurimond
-    Known Issues:
-        . 
-
-    What Needs Work:
-        . UI styling, UI needs an overhaul
-        . Logout error handling (500)
-
-    Concerns:
-        . 
-*/
 import React from 'react';
 import Axios from 'axios';
 import Button from '@material-ui/core/Button';
@@ -45,16 +32,19 @@ class Goals extends React.Component
     {
         super(props);
         this.state = {
+            goalsArr: [],
             user: {
                 id: "",
                 token: ""
             },
             goal: {
+                name: "",
                 startDate: new Date(),
                 endDate: new Date(),
                 percentGoal: 0
             },
             goalRes: {
+                name: "",
                 startDate: new Date(),
                 endDate: new Date(),
                 percentComplete: 0
@@ -63,47 +53,53 @@ class Goals extends React.Component
             unsuccessfulCreate: false
         }
     }
-    /*
-        This function is responsible for setting and updating the startDate variable in the Goal object State.
-    */
-    setStartDate = (date) =>
-    {
+
+    /* This function is responsible for setting and updating the startDate variable in the Goal object State. */
+    setStartDate = (date) => {
         this.setState({
             goal:{
                 ...this.state.goal,
                 startDate: date
         }})
     }
-    /*
-        This function is responsible for setting and updating the endDate variable in the Goal object State.
-    */
-    setEndDate = (date) =>
-    {
+
+    /* This function is responsible for setting and updating the endDate variable in the Goal object State. */
+    setEndDate = (date) => {
         this.setState({
             goal:{
                 ...this.state.goal,
                 endDate: date
         }})
     }
+
     /*
         This function is responsible for setting and updating the percentGoal variable in the Goal object State.
         Parses the input as an Int
     */
-    setPercent = (e) =>
-    {
+    setPercent = (e) => {
         this.setState({
             goal:{
                 ...this.state.goal,
                 percentGoal: parseInt(e.target.value)
         }})
     }
+
+    /* This function is responsible for setting the name variable in the goal state object. */
+    setName = (e) => {
+        this.setState({
+            goal:{
+                ...this.state.goal,
+                name: e.target.value
+        }})
+    }
+
     /*
-        This function is responsible for creating a Goal and sendng a POST request to the database. The Goal object state
-        is sent to the database. If the operation was a sucessful, the response code should be Code 201 and the update State
-        is set to true.
+        This function is responsible for creating a goal and making a POST request to the database. The goal state 
+        object is sent to the database and if the request was successfulthen the update state is set to true and 
+        the goalRes state object is set with the information from the database. If the request was unsuccessful 
+        then the user is prompted.
     */
-    createGoal = () =>
-    {
+    createGoal = () => {
         Axios({
             method: 'POST',
             url: 'https://cs360-task-manager.herokuapp.com/goals/create',
@@ -126,21 +122,37 @@ class Goals extends React.Component
             }
         })
     }
+
+    /*
+    getGoals()
+    {
+        Axios({
+            method: 'GET',
+            url: 'https://cs360-task-manager.herokuapp.com/goals/read/all',
+            headers: {"Authorization" : `Bearer ${this.state.user.token}`}
+        }).then((response) => {
+            console.log(response.data)
+            this.setState({goalsArr: response.data})
+        }).catch(function(error){
+            console.log(error)
+        })
+    }*/
+
    /*
         This function is responsible for calling the necessary components to mount to the page before the page makes it's inital
-        render. It's intended purpose is to call the function setRoute to set up the User information.
+        render. It's intended purpose is to call the function setRoute to set up the user state object with the id and token for
+        the user.
    */
-   async componentDidMount()
-   {
+   async componentDidMount() {
       await this.setRoute();
    }
+
    /*
-       This function is responsible for setting up the necessary information needed to make calls to the DB and navigating, through the
+       This function is responsible for setting up the necessary information needed to make calls to the database and navigating, through the
        application. We then set the user state object to the data that was passed from the previous page. If the user object is 
        undefined, the this page is trying to be accessed without having proper authentication.
    */
-   setRoute() 
-   {
+   setRoute() {
        const { location } = this.props;
        const { history } = this.props;
 
@@ -158,30 +170,27 @@ class Goals extends React.Component
             }})
         }
    }
+
    /*
        This function is responsible for updating the page based on if the update State is set to true. If the
        update state is false, the page won't update, but if it is set to true, the page will re-render updating
        any information. Once the Goal has been created, it will set this state to true to updating the content of
        the page.
    */
-   componentDidUpdate()
-   {
+   componentDidUpdate() {
        if(this.state.update !== false)
        {
            this.setState({update: false});
        }
    }
-   /*
-        This function is responsible for updating the deleteConfirmation state.
-   */
+
+   /* This function is responsible for updating the deleteConfirmation state. */
    closeDialog = () => {
         this.setState({ unsuccessfulCreate: false });
-    };
-   /*
-        This function is responsible for navigating to the Task page and pass the user state object.
-   */
-   navigateTask = () => 
-   {
+    }
+
+   /* This function is responsible for navigating to the Task page and pass the user state object. */
+   navigateTask = () => {
        const { history } = this.props;
        const user = this.state.user
        
@@ -190,11 +199,9 @@ class Goals extends React.Component
            user
         });
    }
-   /*
-        This function is responsible for navigating to the Settings(User) page and pass the user state object.
-   */
-   navigateSetitng = () => 
-   {
+
+   /* This function is responsible for navigating to the Settings(User) page and pass the user state object. */
+   navigateSetitng = () => {
         const { history } = this.props;
         const user = this.state.user
 
@@ -203,9 +210,8 @@ class Goals extends React.Component
             user
         });
     }
-    /*
-        This function is responsible for navigating to the Goal page and pass the user state object.
-   */
+
+    /* This function is responsible for navigating to the Goal page and pass the user state object. */
     navigateGoal = () => {
         const { history } = this.props;
         const user = this.state.user
@@ -215,9 +221,8 @@ class Goals extends React.Component
             user
         });
     }
-    /*
-        This function is responsible for handling the user logging out and redirecting the user to the home page.
-    */
+
+    /* This function is responsible for handling the user logging out and redirecting the user to the home page. */
     logout = () => 
     {
         const { history } = this.props;
@@ -243,9 +248,6 @@ class Goals extends React.Component
                             </Button>
                             <Button variant="contained" color="primary" onClick={this.navigateTask}>
                                 Tasks
-                            </Button>
-                            <Button variant="contained" color="primary" >
-                                Notes
                             </Button>
                         </div>
                         <div className="taskbarRight">
@@ -282,7 +284,16 @@ class Goals extends React.Component
                                     onChange={this.setEndDate}/>
                             </Grid>
                         </MuiPickersUtilsProvider>
-
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            onChange={this.setName}
+                            label="Goal Name"
+                            type="text"
+                            InputLabelProps={{
+                                shrink: true,
+                              }}
+                        />
                         <TextField
                             autoFocus
                             margin="dense"

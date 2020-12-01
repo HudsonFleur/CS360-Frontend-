@@ -1,16 +1,3 @@
-/*
-========================== Log File ========================================
-Last Worked on: November 24th   Hudson Fleurimond
-    Known Issues:
-        . 
-
-    What Needs Work:
-        . UI styling, UI needs an overhaul
-        . Delete and Logout error handling (500)
-
-    Concerns:
-        .
-*/
 import React from 'react'
 import Axios from 'axios'
 import {withRouter } from "react-router-dom";
@@ -21,22 +8,18 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 
-/* User Class */
+/* User Class Component */
 class User extends React.Component
 {
-    // Constructor for User Class
+    /* Constructor for User Class */
     /*
         State Declarations
             user:   State object for holding the User information, The id of the User, Token for authentication, 
                     set to empty initially
-
             userInfo:   State object for holding the User Account information, The name of the User and the email associated
                         with the account
-
             successfulSave:         State for controling the view of the sucessful save dialog
-
             unsuccessfulSave:       State for controling the view of the unsucessful save dialog
-
             deleteConfirmation:     State for controling the view of the delete confirmation dialog
     */
     constructor(props) 
@@ -57,24 +40,23 @@ class User extends React.Component
             deleteConfirmation: false
         }
     }
+
     /*
         This function is responsible for calling the necessary components to mount to the page before the page makes it's inital
-        render. It's intended purpose is to call the function setRoute to set up the User information and then call the function
-        getUserInfo to get the informtaion of the account associated with this user. This function also calls another function to 
-        get the account information for the user.
+        render. It's intended purpose is to call the function setRoute to set up the user state object with the id and token for
+        the user and afterwards call the function getUserInfo to get the informtaion of the account associated with this user. 
     */
-    async componentDidMount()
-    {
+    async componentDidMount() {
        await this.setRoute();
        this.getUserInfo();
     }
+
     /*
-       This function is responsible for setting up the necessary information needed to make calls to the DB and navigating, through the
+       This function is responsible for setting up the necessary information needed to make calls to the database and navigating, through the
        application. We then set the user state object to the data that was passed from the previous page. If the user object is 
        undefined, the this page is trying to be accessed without having proper authentication.
-   */
-    setRoute() 
-    {
+    */
+    setRoute() {
         const { location } = this.props;
         const { history } = this.props;
 
@@ -92,12 +74,12 @@ class User extends React.Component
             }})
         }
     }
+
     /*
         This function is responsible for retrieving the information associated with the account. If the request was successful
         then the userInfo state object is updated with the information found from the database.
     */
-    getUserInfo() 
-    {
+    getUserInfo() {
         Axios({
             method: 'GET',
             url: 'https://cs360-task-manager.herokuapp.com/users/me',
@@ -112,13 +94,14 @@ class User extends React.Component
         })
         .catch(function(error) {})
     }
+
     /*
         This function is responsible for updating the information associated with the account. If the user supplies a new
-        password, it will be appended to the userInfo object. If the request was successful then the userInfo state object
-        is updated with the information found from the database. If the response failed or was a sucess, prompt the user.
+        password, it will be appended to the userInfo object. If the request was successful (status = 200) then the userInfo 
+        state object is updated with the information and will promp the user of the changes. If the response failed then it 
+        will give the user the proper error prompt.
     */
-    updateUserInfo = () => 
-    {
+    updateUserInfo = () => {
         if(this.state.password !== "" && this.state.password.length >= 7)
         {
             this.setState({
@@ -146,69 +129,59 @@ class User extends React.Component
               }
           })
     }
-    /*
-        This function is responsible for updating the successfulSave state.
-    */
+
+    /* This function is responsible for updating the successfulSave state. */
     closeDialogS = () => {
         this.setState({ successfulSave: false });
-    };
-    /*
-        This function is responsible for updating the unsuccessfulSave state.
-    */
+    }
+
+    /* This function is responsible for updating the unsuccessfulSave state. */
     closeDialogU = () => {
         this.setState({ unsuccessfulSave: false });
-    };
-    /*
-        This function is responsible for updating the deleteConfirmation state.
-    */
+    }
+
+    /* This function is responsible for updating the deleteConfirmation state. */
     openDialog = () => {
         this.setState({ deleteConfirmation: true });
-    };
-    /*
-        This function is responsible for updating the deleteConfirmation state.
-    */
+    }
+
+    /* This function is responsible for updating the deleteConfirmation state. */
     closeDialog = () => {
         this.setState({ deleteConfirmation: false });
-    };
-    /*
-        This function is responsible for setting and updating the name variable in the userInfo object State.
-    */
-    updateName = (e) =>
-    {
+    }
+
+    /* This function is responsible for setting and updating the name variable in the userInfo object State. */
+    updateName = (e) => {
         this.setState({
             userInfo:{
                 ...this.state.userInfo,
                 name: e.target.value,
         }})
     }
-    /*
-        This function is responsible for setting and updating the email variable in the userInfo object State.
-    */
-    updateEmail = (e) =>
-    {
+
+    /* This function is responsible for setting and updating the email variable in the userInfo object State. */
+    updateEmail = (e) => {
         this.setState({
             userInfo:{
                 ...this.state.userInfo,
                 email: e.target.value,
         }})
     }
-    /*
-        This function is responsible for setting and updating the password state.
-    */
-    updatePassword = (e) =>
-    {
+
+    /* This function is responsible for setting and updating the password state. */
+    updatePassword = (e) => {
         this.setState({
             userInfo:{
                 ...this.state.userInfo,
                 password: e.target.value,
         }})
     }
+
     /*
         This function is responsible for deleting a User account. This functions sends a DELETE request to the
         database and if the request was sucessful, the User is redirected back to the home page.
     */
-    deleteUser = () => 
-    {
+    deleteUser = () => {
         const { history } = this.props;
         Axios({
             method: 'DELETE',
@@ -220,9 +193,8 @@ class User extends React.Component
           })
           .catch(function(error) {})
     }
-    /*
-        This function is responsible for navigating to the Task page and pass the user state object.
-   */
+
+    /* This function is responsible for navigating to the Task page and pass the user state object. */
     navigateTask = () => {
         const { history } = this.props;
         const user = this.state.user
@@ -232,9 +204,8 @@ class User extends React.Component
             user
         });
     }
-    /*
-        This function is responsible for navigating to the Settings(User) page and pass the user state object.
-   */
+
+    /* This function is responsible for navigating to the Settings(User) page and pass the user state object. */
     navigateSetitng = () => {
         const { history } = this.props;
         const user = this.state.user
@@ -244,9 +215,8 @@ class User extends React.Component
             user
         });
     }
-    /*
-        This function is responsible for navigating to the Goals page and pass the user state object.
-   */
+
+    /* This function is responsible for navigating to the Goals page and pass the user state object. */
     navigateGoal= () => {
         const { history } = this.props;
         const user = this.state.user
@@ -256,9 +226,8 @@ class User extends React.Component
             user
         });
     }
-    /*
-        This function is responsible for handling the user logging out and redirecting the user to the home page.
-    */
+
+    /* This function is responsible for handling the user logging out and redirecting the user to the home page. */
     logout = () => {
         const { history } = this.props;
         Axios({
@@ -282,9 +251,6 @@ class User extends React.Component
                             </Button>
                             <Button variant="contained" color="primary" onClick={this.navigateTask}>
                                 Tasks
-                            </Button>
-                            <Button variant="contained" color="primary" >
-                                Notes
                             </Button>
                         </div>
                         <div className="taskbarRight">

@@ -2,12 +2,13 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 
+/* Function Component Home */
 function Home()
 {
-        return(
-<div id="wrapper">
-        <div id="container">
-            organize  
+    return(
+        <div id="wrapper">
+            <div id="container">
+                organize  
             <div id="flip">
                 <div><div>your thoughts</div></div>
                 <div><div>your work</div></div>
@@ -16,8 +17,7 @@ function Home()
         </div>
         <div id="signup-container">
             <div>
-                <Button variant="contained" color="primary" 
-                    > 
+                <Button variant="contained" color="primary" > 
                     <Link 
                         style={{color:'inherit', textDecoration: 'inherit'}}
                         to="/register">
