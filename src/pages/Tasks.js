@@ -152,8 +152,8 @@ class Tasks extends React.Component {
     dateSubOffset = (date) => {
         let offset = (new Date().getTimezoneOffset()) / 60;
         let newDate = new Date(date);
-        newDate.setHours(23 - offset)
-        
+        newDate.setHours(23)
+        console.log("sub", newDate)
         return newDate
     }
 
@@ -175,6 +175,7 @@ class Tasks extends React.Component {
             {
                 this.setState({updatedTask: true})
                 this.setState({taskCreate: false})
+                console.log("create", this.state.task.dueDate)
             }
         })
         .catch(function(error) {})
