@@ -145,7 +145,6 @@ class Goals extends React.Component
             }})
             this.setState({update: true});
             this.dateSubOffsetOnChange(this.state.goal.endDate)
-            console.log(this.state.goal)
         })
         .catch((error) => {
             if(error.response.status === 400)
