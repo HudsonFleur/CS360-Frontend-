@@ -25,7 +25,6 @@ class Goals extends React.Component
             goalRes :   State object for holding the Goal information for a the response that is sent back from the database
                         It contains a Start Date, an End Date and a PercentGoal.
             update:     State for controlling the page to check to see if there has been an update. Set to false
-
             unsuccessfulSave:       State for controling the view of the unsucessful save dialog
     */
     constructor(props) 
@@ -115,7 +114,7 @@ class Goals extends React.Component
             }})
             this.setState({update: true});
         })
-        .catch(function(error) {
+        .catch((error) => {
             if(error.response.status === 400)
             {
                 this.setState({unsuccessfulCreate: true});
@@ -316,7 +315,7 @@ class Goals extends React.Component
                         <Dialog open={this.state.unsuccessfulCreate} onClose={this.closeDialog} aria-labelledby="form-dialog-title">
                             <DialogTitle id="form-dialog-title">Create Error</DialogTitle>
                             <DialogContent> 
-                                Goal was unable to be created.
+                                Goal was unable to be created. Make sure Goal has a name.
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.closeDialog}>

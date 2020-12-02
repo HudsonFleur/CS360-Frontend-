@@ -32,6 +32,7 @@ class Tasks extends React.Component {
             task:       State object for holding the Task information for a specific task, The description of the Task,
                         the Due Date it should be completed and if it has been completed
             taskID:     State for holding the ID of a task
+            emptyTask:  State for controling the view of the createTaskError
             deleteConfirmation:     State for controling the view of the delete confirmation dialog
             updatedTask:            State for controlling the condtion on if the page should update for any new changes made
     */
@@ -53,6 +54,8 @@ class Tasks extends React.Component {
                 completed: false,
             },
             taskID: '',
+            emptyGoal: false,
+            emptyTask: false,
             deleteConfirmation: false,
             updatedTask: false
         }
@@ -125,9 +128,7 @@ class Tasks extends React.Component {
             headers: {"Authorization" : `Bearer ${this.state.user.token}`}
         }).then((response) => {
             this.setState({taskArr: response.data})
-        }).catch(function(error){
-            console.log(error)
-        })
+        }).catch((error) => {})
     }
 
     /*
@@ -175,7 +176,12 @@ class Tasks extends React.Component {
                 this.setState({taskCreate: false})
             }
         })
-        .catch(function(error) {})
+        .catch((error) => {
+            if(error.response.status === 400)
+            {
+                this.setState({emptyTask: true})
+            }
+        })
     }
 
     /* This function is responsible for setting and or updating the description variable in the task state object. */    
@@ -215,6 +221,11 @@ class Tasks extends React.Component {
         this.setState({ taskCreate: false });
     }
 
+    /* This function is responsible for closing the Create Dialog window by setting the emptyTask state to false. */
+    closeDialogE = () => {
+        this.setState({ emptyTask: false });
+    }
+
     /*
         This function has a GET request to the database to retrieve a specific Task when supplied the Task
         ID. This function is responsible for opening the View Dialog window by setting the taskView state to true.
@@ -236,9 +247,7 @@ class Tasks extends React.Component {
             this.setState({
                 taskID: TaskID})
         })
-        .catch(function(error) {
-            console.log(error);
-        })
+        .catch(function(error) {})
         this.setState({taskView: true})
     }
 
@@ -262,9 +271,7 @@ class Tasks extends React.Component {
             this.setState({updatedTask: true})
             this.setState({ taskView: false });
         })
-        .catch(function(error) {
-            console.log(error);
-        })
+        .catch(function(error) {})
         
     }
 
@@ -492,7 +499,19 @@ class Tasks extends React.Component {
                                             No
                                         </Button>
                                     </DialogActions>
-                                </Dialog> 
+                                </Dialog>
+
+                                <Dialog open={this.state.emptyTask} disableBackdropClick="true" onClose={this.closeDialogE} aria-labelledby="form-dialog-title">
+                                    <DialogTitle id="form-dialog-title">Error</DialogTitle>
+                                    <DialogContent> 
+                                        Task Description cannot be empty.
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={this.closeDialogE}>
+                                            Ok.
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>  
                         </div>
                     ))}
                 </div>
