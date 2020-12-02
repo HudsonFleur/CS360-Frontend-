@@ -25,7 +25,6 @@ class Goals extends React.Component
             goalRes :   State object for holding the Goal information for a the response that is sent back from the database
                         It contains a Start Date, an End Date and a PercentGoal.
             update:     State for controlling the page to check to see if there has been an update. Set to false
-
             unsuccessfulSave:       State for controling the view of the unsucessful save dialog
     */
     constructor(props)
@@ -115,28 +114,13 @@ class Goals extends React.Component
             }})
             this.setState({update: true});
         })
-        .catch(function(error) {
+        .catch((error) => {
             if(error.response.status === 400)
             {
                 this.setState({unsuccessfulCreate: true});
             }
         })
     }
-
-    /*
-    getGoals()
-    {
-        Axios({
-            method: 'GET',
-            url: 'https://cs360-task-manager.herokuapp.com/goals/read/all',
-            headers: {"Authorization" : `Bearer ${this.state.user.token}`}
-        }).then((response) => {
-            console.log(response.data)
-            this.setState({goalsArr: response.data})
-        }).catch(function(error){
-            console.log(error)
-        })
-    }*/
 
    /*
         This function is responsible for calling the necessary components to mount to the page before the page makes it's inital
@@ -316,8 +300,13 @@ class Goals extends React.Component
 
                         <Dialog open={this.state.unsuccessfulCreate} onClose={this.closeDialog} aria-labelledby="form-dialog-title">
                             <DialogTitle id="form-dialog-title">Create Error</DialogTitle>
+<<<<<<< HEAD
                             <DialogContent>
-                                Goal was unable to be created.
+                                Goal was unable to be created. Make sure Goal has a name.
+=======
+                            <DialogContent> 
+                                Goal was unable to be created. Make sure Goal has a name.
+>>>>>>> f810bc5716c36710c8d01d02945f92fde46557d5
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.closeDialog}>
