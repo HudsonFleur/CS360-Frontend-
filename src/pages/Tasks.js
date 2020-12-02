@@ -150,10 +150,8 @@ class Tasks extends React.Component {
 
     /* This function is responsible for subtracting the offset to accommodate for the UTC time setting that the database is set to. */
     dateSubOffset = (date) => {
-        let offset = (new Date().getTimezoneOffset()) / 60;
         let newDate = new Date(date);
-        newDate.setHours(23)
-        console.log("sub", newDate)
+        newDate.setDate(newDate.getDate() -1)
         return newDate
     }
 
@@ -175,7 +173,6 @@ class Tasks extends React.Component {
             {
                 this.setState({updatedTask: true})
                 this.setState({taskCreate: false})
-                console.log("create", this.state.task.dueDate)
             }
         })
         .catch(function(error) {})
@@ -429,7 +426,7 @@ class Tasks extends React.Component {
                             <List component="nav" aria-label="mailbox folders">
                                 <ListItem button key={task._id} onClick={() => this.viewDialogOpen(task._id)}>
                                     <ListItemText className="taskDescription" primary={this.truncateDescription(task.description)}/>
-                                    <ListItemText primary={this.dateSubOffset(task.dueDate).toDateString() }/>
+                                    <ListItemText primary={this.dateSubOffset((task.dueDate)).toDateString() }/>
                                     <ListItemText primary={this.checkCompleted(task.completed)} />
                                 </ListItem>
                                 <Divider />
