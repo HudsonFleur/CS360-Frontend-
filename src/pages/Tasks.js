@@ -405,6 +405,7 @@ class Tasks extends React.Component {
                             <Grid container justify="space-around">
                                 <KeyboardDatePicker
                                     variant="inline"
+                                    label="Due Date"
                                     format="MM/dd/yyyy"
                                     margin="normal"
                                     autoOk="true"
