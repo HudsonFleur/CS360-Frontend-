@@ -360,9 +360,7 @@ class Tasks extends React.Component {
         }).then((response) => {
             history.push({pathname:'/'});
         })
-        .catch(function(error) {
-            console.log(error);
-        })
+        .catch(function(error) {})
     }
     render()
     {

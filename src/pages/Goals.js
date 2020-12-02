@@ -122,21 +122,6 @@ class Goals extends React.Component
         })
     }
 
-    /*
-    getGoals()
-    {
-        Axios({
-            method: 'GET',
-            url: 'https://cs360-task-manager.herokuapp.com/goals/read/all',
-            headers: {"Authorization" : `Bearer ${this.state.user.token}`}
-        }).then((response) => {
-            console.log(response.data)
-            this.setState({goalsArr: response.data})
-        }).catch(function(error){
-            console.log(error)
-        })
-    }*/
-
    /*
         This function is responsible for calling the necessary components to mount to the page before the page makes it's inital
         render. It's intended purpose is to call the function setRoute to set up the user state object with the id and token for
