@@ -16,7 +16,6 @@ class Header extends React.Component
                 <div className="headerLogo"></div>
                 <div className="headerBox">
                     <Link className="headerElements" to="/"> Home </Link>
-                    <Link className="headerElements" to="about-us"> About Us </Link>
                     <Link className="headerElements" to="register"> Register </Link>
                     <Link className="headerElements" to="login"> Login </Link>
                 </div>

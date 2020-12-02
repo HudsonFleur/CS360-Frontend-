@@ -3,7 +3,6 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import './styles.css'
 
 import Home from './pages/Home'
-import AboutUs from './pages/AboutUs'
 import Register from './pages/Register'
 import Login from './pages/Login'
 import Tasks from './pages/Tasks'
@@ -20,7 +19,6 @@ class App extends Component
                     <Route exact path='/' component={Home} />
                     <Route exact path='/register' component={Register} />
                     <Route exact path='/login' component={Login} />
-                    <Route exact path='/about-us' component={AboutUs} />
                     <Route exact path='/tasks'    component={Tasks} />
                     <Route exact path='/user' component={User} />
                     <Route exact path='/goals' component={Goals} />
