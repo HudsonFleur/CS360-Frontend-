@@ -300,13 +300,10 @@ class Goals extends React.Component
 
                         <Dialog open={this.state.unsuccessfulCreate} onClose={this.closeDialog} aria-labelledby="form-dialog-title">
                             <DialogTitle id="form-dialog-title">Create Error</DialogTitle>
-<<<<<<< HEAD
+
                             <DialogContent>
                                 Goal was unable to be created. Make sure Goal has a name.
-=======
-                            <DialogContent> 
-                                Goal was unable to be created. Make sure Goal has a name.
->>>>>>> f810bc5716c36710c8d01d02945f92fde46557d5
+
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.closeDialog}>
