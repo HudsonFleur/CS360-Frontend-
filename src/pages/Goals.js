@@ -18,7 +18,7 @@ class Goals extends React.Component
     /* Constructor for class */
     /*
         State Declarations
-            user:       State object for holding the User information, The id of the User, Token for authentication, 
+            user:       State object for holding the User information, The id of the User, Token for authentication,
                         set to empty initially
             goal:       State object for holding the Goal information for a goal that is going to be sent to the database.
                         It contains a Start Date, an End Date and a PercentGoal.
@@ -28,7 +28,7 @@ class Goals extends React.Component
 
             unsuccessfulSave:       State for controling the view of the unsucessful save dialog
     */
-    constructor(props) 
+    constructor(props)
     {
         super(props);
         this.state = {
@@ -94,9 +94,9 @@ class Goals extends React.Component
     }
 
     /*
-        This function is responsible for creating a goal and making a POST request to the database. The goal state 
-        object is sent to the database and if the request was successfulthen the update state is set to true and 
-        the goalRes state object is set with the information from the database. If the request was unsuccessful 
+        This function is responsible for creating a goal and making a POST request to the database. The goal state
+        object is sent to the database and if the request was successfulthen the update state is set to true and
+        the goalRes state object is set with the information from the database. If the request was unsuccessful
         then the user is prompted.
     */
     createGoal = () => {
@@ -149,7 +149,7 @@ class Goals extends React.Component
 
    /*
        This function is responsible for setting up the necessary information needed to make calls to the database and navigating, through the
-       application. We then set the user state object to the data that was passed from the previous page. If the user object is 
+       application. We then set the user state object to the data that was passed from the previous page. If the user object is
        undefined, the this page is trying to be accessed without having proper authentication.
    */
    setRoute() {
@@ -193,7 +193,7 @@ class Goals extends React.Component
    navigateTask = () => {
        const { history } = this.props;
        const user = this.state.user
-       
+
        history.push({
            pathname:'/tasks',
            user
@@ -223,7 +223,7 @@ class Goals extends React.Component
     }
 
     /* This function is responsible for handling the user logging out and redirecting the user to the home page. */
-    logout = () => 
+    logout = () =>
     {
         const { history } = this.props;
         Axios({
@@ -236,7 +236,7 @@ class Goals extends React.Component
         })
         .catch(function(error) {})
     }
-    
+
     render()
     {
         return(
@@ -259,6 +259,7 @@ class Goals extends React.Component
                             </Button>
                         </div>
                 </div>
+                <div className = "goalsContainer">
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <Grid container justify="space-around">
                                 <KeyboardDatePicker
@@ -315,7 +316,7 @@ class Goals extends React.Component
 
                         <Dialog open={this.state.unsuccessfulCreate} onClose={this.closeDialog} aria-labelledby="form-dialog-title">
                             <DialogTitle id="form-dialog-title">Create Error</DialogTitle>
-                            <DialogContent> 
+                            <DialogContent>
                                 Goal was unable to be created.
                             </DialogContent>
                             <DialogActions>
@@ -324,6 +325,7 @@ class Goals extends React.Component
                                 </Button>
                             </DialogActions>
                         </Dialog>
+            </div>
             </div>
         )
     }

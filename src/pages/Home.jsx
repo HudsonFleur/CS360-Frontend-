@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 function Home()
 {
     return(
+    <div className = "homeContainer">
         <div id="wrapper">
             <div id="container">
                 organize  
@@ -26,17 +27,20 @@ function Home()
                 </Button>
             </div>
 
-            <div> 
-                Already Have an Account?
-                <button className="button" type="button"> 
-                    <Link 
-                        style={{color:'inherit', textDecoration: 'inherit'}}
-                        className="text" to="/login">
-                        Login
-                    </Link>
-                </button> 
-            </div>
-        </div>
+             <div> 
+	     Already Have an Account?
+	     <Button variant="contained" color="primary" > 
+	     <Link 
+	    	 style={{color:'inherit', textDecoration: 'inherit'}}
+	    	  to="/login">
+	    	  Login!
+	    </Link>
+	    </Button>
+	   </div>
+	                
+	                 
+	   </div>
+	   </div>
 </div>
     )
 }

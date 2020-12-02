@@ -11,7 +11,9 @@ class Register extends React.Component
         return(
             <div>
                 <Header />
-                <RegisterForm />
+                <div className = "registerContainer">
+                	<RegisterForm />
+                </div>
             </div>
         )
     }

@@ -1,6 +1,10 @@
 #wrapper {
-    width: 100vh;
-    height: 100vh;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        background-image: url("./img/home_page.png");
+        background-size: cover
+
 }
 
 @import url('https://fonts.googleapis.com/css?family=Roboto:700');
@@ -8,8 +12,8 @@ body {
     margin: 0px;
     font-family: 'Roboto';
     text-align: center;
-    background-image: url("./img/home_page.png");
-    background-size: cover;
+    background-image: url("./img/water.jpg");
+    background-size: cover
 }
 
 #container {
@@ -123,6 +127,7 @@ button:hover.home {
     display: flex;
     padding: 30px;
     justify-content: space-between;
+    background-color: #483D8B;
 }
 .headerBox{
     text-align: right;
@@ -132,6 +137,7 @@ button:hover.home {
     display: flex;
     padding: 30px;
     justify-content: space-between;
+     background-color: #483D8B;
 }
 .taskbarLeft{
     align-self: left;
@@ -151,14 +157,86 @@ button:hover.home {
 .modal {
     background: rgba(0, 0, 0, 0.6);
   }
-.modal-container {
+  .modal-container {
     position: absolute;
     width: 60%;
     background: #ffffff;
     left: 25%;
     top: 30%;
     padding: 20px;
+  }
+.homeConatiner{
+    margin: 0px;
+    font-family: 'Roboto';
+    text-align: center;
+    background-image: url("./img/home_page.png");
+    background-color: Navy Blue;
+    background-size: cover;
 }
-.taskDescription {
-    width: 70px;
+.loginContainer{
+height: 10em;
+position: relative;
+margin: 0;
+position: absolute;
+top: 50%;
+left: 50%;
+margin-right: -50%;
+transform: translate(-50%, -50%)
 }
+
+.registerContainer{
+height: 10em;
+position: relative;
+margin: 0;
+position: absolute;
+top: 50%;
+left: 50%;
+margin-right: -50%;
+transform: translate(-50%, -50%)
+}
+
+.aboutUsContainer{
+height: 10em;
+position: relative;
+margin: 0;
+position: absolute;
+top: 50%;
+left: 50%;
+margin-right: -50%;
+transform: translate(-50%, -50%)
+}
+
+.goalsContainer{
+height: 10em;
+position: relative;
+margin: 0;
+position: absolute;
+top: 50%;
+left: 50%;
+margin-right: -50%;
+transform: translate(-50%, -50%)
+}
+
+.settingsContainer{
+height: 10em;
+position: relative;
+margin: 0;
+position: absolute;
+top: 50%;
+left: 50%;
+margin-right: -50%;
+transform: translate(-50%, -50%)
+}
+.editButtonContainer{
+height: 10em;
+position: relative;
+margin: 0;
+position: absolute;
+top: 60%;
+left: 50%;
+margin-right: -50%;
+transform: translate(-50%, -50%)
+}
+
+background-image: url("./img/home_page.png");
+background-size: cover;

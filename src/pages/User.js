@@ -14,7 +14,7 @@ class User extends React.Component
     /* Constructor for User Class */
     /*
         State Declarations
-            user:   State object for holding the User information, The id of the User, Token for authentication, 
+            user:   State object for holding the User information, The id of the User, Token for authentication,
                     set to empty initially
             userInfo:   State object for holding the User Account information, The name of the User and the email associated
                         with the account
@@ -22,7 +22,7 @@ class User extends React.Component
             unsuccessfulSave:       State for controling the view of the unsucessful save dialog
             deleteConfirmation:     State for controling the view of the delete confirmation dialog
     */
-    constructor(props) 
+    constructor(props)
     {
         super(props);
         this.state = {
@@ -44,7 +44,7 @@ class User extends React.Component
     /*
         This function is responsible for calling the necessary components to mount to the page before the page makes it's inital
         render. It's intended purpose is to call the function setRoute to set up the user state object with the id and token for
-        the user and afterwards call the function getUserInfo to get the informtaion of the account associated with this user. 
+        the user and afterwards call the function getUserInfo to get the informtaion of the account associated with this user.
     */
     async componentDidMount() {
        await this.setRoute();
@@ -53,7 +53,7 @@ class User extends React.Component
 
     /*
        This function is responsible for setting up the necessary information needed to make calls to the database and navigating, through the
-       application. We then set the user state object to the data that was passed from the previous page. If the user object is 
+       application. We then set the user state object to the data that was passed from the previous page. If the user object is
        undefined, the this page is trying to be accessed without having proper authentication.
     */
     setRoute() {
@@ -97,8 +97,8 @@ class User extends React.Component
 
     /*
         This function is responsible for updating the information associated with the account. If the user supplies a new
-        password, it will be appended to the userInfo object. If the request was successful (status = 200) then the userInfo 
-        state object is updated with the information and will promp the user of the changes. If the response failed then it 
+        password, it will be appended to the userInfo object. If the request was successful (status = 200) then the userInfo
+        state object is updated with the information and will promp the user of the changes. If the response failed then it
         will give the user the proper error prompt.
     */
     updateUserInfo = () => {
@@ -110,7 +110,7 @@ class User extends React.Component
                     password: this.state.password
             }})
         }
-        
+
         Axios({
             method: 'PATCH',
             url: 'https://cs360-task-manager.herokuapp.com/users/me',
@@ -263,6 +263,7 @@ class User extends React.Component
                         </div>
                 </div>
                 <div>
+                	<div className = "settingsContainer">
                     <TextField
                         label="Name"
                         style={{ margin: 8, width: '25ch' }}
@@ -292,14 +293,17 @@ class User extends React.Component
                         margin="normal"
                         type="password"
                     />
+                    </div>
                 </div>
                 <div>
+                <div className = "editButtonContainer">
                     <Button onClick={this.updateUserInfo}>
                         Save Changes
                     </Button>
                     <Button onClick={this.openDialog}>
                         Delete Account
                     </Button>
+                </div>
                 </div>
 
                 <Dialog open={this.state.successfulSave} onClose={this.closeDialogS} aria-labelledby="form-dialog-title">
@@ -316,7 +320,7 @@ class User extends React.Component
 
                 <Dialog open={this.state.unsuccessfulSave} onClose={this.closeDialogU} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Save Error</DialogTitle>
-                    <DialogContent> 
+                    <DialogContent>
                         User information was unable to save. Check to make sure your Name, Email and Password
                         are within the correct requirements.
                     </DialogContent>
@@ -329,8 +333,8 @@ class User extends React.Component
 
                 <Dialog open={this.state.deleteConfirmation} disableBackdropClick="true" onClose={this.closeDialog} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Confirmation Required</DialogTitle>
-                    <DialogContent> 
-                        Are you sure you want to delete your Account? 
+                    <DialogContent>
+                        Are you sure you want to delete your Account?
                         Once you confirm, all of your data will be permanently deleted.
                     </DialogContent>
                     <DialogActions>

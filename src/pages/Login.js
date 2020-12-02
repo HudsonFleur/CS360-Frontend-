@@ -11,7 +11,9 @@ class Login extends React.Component
         return(
             <div>
                 <Header />
-                <LoginForm />
+                <div className = "loginContainer">
+                	<LoginForm />
+                </div>
             </div>
         )
     }
