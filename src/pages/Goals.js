@@ -98,7 +98,38 @@ class Goals extends React.Component
         the goalRes state object is set with the information from the database. If the request was unsuccessful
         then the user is prompted.
     */
+
+        /* This function is responsible for setting the time of day to be the end of the day so the entire day is taken into account when comparing. */
+        setEndOfDay = () => {
+            let offset = (new Date().getTimezoneOffset()) / 60;
+            this.state.goal.endDate.setHours(23 + offset)
+            this.state.goal.endDate.setMinutes(59)
+            this.state.goal.endDate.setSeconds(59)
+            this.state.goal.endDate.setMilliseconds(999)
+        }
+
+        /* This function is responsible for setting the time of day to be the start of the day so the entire day is taken into account when comparing. */
+        setBeginningOfDay = () => {
+            this.state.goal.startDate.setHours(0)
+            this.state.goal.startDate.setMinutes(0)
+            this.state.goal.startDate.setSeconds(0)
+            this.state.goal.startDate.setMilliseconds(0)
+        }
+
+        dateSubOffsetOnChange = (date) => {
+            let newDate = new Date(date);
+            newDate.setDate(newDate.getDate() - 1)
+            
+            this.setState({
+                goal:{
+                    ...this.state.goal,
+                    endDate: newDate
+                }
+            })
+        }
     createGoal = () => {
+        this.setBeginningOfDay()
+        this.setEndOfDay()
         Axios({
             method: 'POST',
             url: 'https://cs360-task-manager.herokuapp.com/goals/create',
@@ -113,6 +144,8 @@ class Goals extends React.Component
                     percentComplete: response.data.percentComplete
             }})
             this.setState({update: true});
+            this.dateSubOffsetOnChange(this.state.goal.endDate)
+            console.log(this.state.goal)
         })
         .catch((error) => {
             if(error.response.status === 400)

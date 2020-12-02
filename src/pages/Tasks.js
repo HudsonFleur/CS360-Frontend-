@@ -156,6 +156,18 @@ class Tasks extends React.Component {
         return newDate
     }
 
+    dateAddOffsetOnChange = (date) => {
+        let newDate = new Date(date);
+        newDate.setDate(newDate.getDate() + 1)
+        
+        this.setState({
+            task:{
+                ...this.state.task,
+                dueDate: newDate
+            }
+        })
+    }
+
     /*
         This function is responsible for creating a task and making a POST request to the database. The dateAddOffset function
         is called and then the POST request to the database is made, The task state object is sent to the database and if the 
@@ -202,6 +214,15 @@ class Tasks extends React.Component {
         }})
     }
 
+        /* This function is responsible for updating the dueDate variable in the task state object. */
+        setDateOnChange = (date) => {
+            this.setState({
+                task:{
+                    ...this.state.task,
+                    dueDate: new Date(date).dateAddOffset()
+            }})
+        }
+
     /* This function is responsible for setting and or updating the completed variable in the task state object. */
     setCompleted = (event) => {
         this.setState({
@@ -213,6 +234,14 @@ class Tasks extends React.Component {
 
     /* This function is responsible for opening the Create Dialog window by setting the taskCreate state to true. */
     createDialogOpen = () => {
+        this.setState({
+            task:{
+                ...this.state.task,
+                description:"",
+                dueDate: new Date(),
+                completed: false
+            }
+        })
         this.setState({taskCreate: true})
     }
 
@@ -459,8 +488,8 @@ class Tasks extends React.Component {
                                                 margin="normal"
                                                 autoOk="true"
                                                 label="Due Date"
-                                                value={this.state.task.dueDate}
-                                                onChange={this.setDate}/>
+                                                value={this.dateSubOffset(this.state.task.dueDate)}
+                                                onChange={this.dateAddOffsetOnChange}/>
                                         </Grid>
                                     </MuiPickersUtilsProvider>
                                     <div>
