@@ -37,7 +37,9 @@ function Home()
 	    </Link>
 	    </Button>
 	   </div>
-	                
+       <div>
+       <a href={'https://expo.io/artifacts/d44a008d-bfea-4b13-a644-e423a9eafb61'} target="_blank"> Install on Android </a>
+       </div>
 	                 
 	   </div>
 	   </div>
