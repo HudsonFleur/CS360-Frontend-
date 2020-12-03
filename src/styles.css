@@ -129,6 +129,11 @@ button:hover.home {
     justify-content: space-between;
     background-color: #483D8B;
 }
+.headerLogo {
+    font-family: monospace;
+    font-size: 30px;
+    color: #fff;
+}
 .headerBox{
     text-align: right;
     float: right;
@@ -237,3 +242,7 @@ left: 50%;
 margin-right: -50%;
 transform: translate(-50%, -50%)
 }
+a:link {color: white;background-color: transparent;text-decoration: none;}
+a:visited {color: white;background-color: transparent;text-decoration: none;}
+a:hover {color: blue; background-color: transparent; text-decoration: underline;}
+a:active {color: rgb(161, 156, 156); background-color: transparent; text-decoration: underline;}
